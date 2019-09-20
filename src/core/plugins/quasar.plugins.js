@@ -1,11 +1,11 @@
 import Vue from 'vue'
 
-import './styles/quasar.styl'
+import '~/assets/styles/quasar.styl'
 import 'quasar/dist/quasar.ie.polyfills'
 import lang from 'quasar/lang/zh-hans.js'
 import '@quasar/extras/material-icons/material-icons.css'
 import {
-  Quasar, 
+  Quasar,
   QLayout,
   QHeader,
   QDrawer,
@@ -18,7 +18,7 @@ import {
   QList,
   QItem,
   QItemSection,
-  QItemLabel,
+  QItemLabel
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -36,11 +36,9 @@ Vue.use(Quasar, {
     QList,
     QItem,
     QItemSection,
-    QItemLabel,
+    QItemLabel
   },
-  directives: {
-  },
-  plugins: {
-  },
+  directives: {},
+  plugins: {},
   lang: lang
- })
+})
