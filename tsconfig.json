@@ -14,7 +14,7 @@
     "downlevelIteration": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["webpack-env"],
+    "types": ["node"],
     "paths": {
       "@/*": ["src/*"],
       "~/*": ["src/*"]

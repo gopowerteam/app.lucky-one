@@ -3,7 +3,7 @@ import Vue from 'vue'
 import router from './router'
 import store from './store'
 import { Application } from '~/core'
-
+import { launch } from '~/core/launch'
 import { filters, directives, provides, plugins } from '~/shared/extension'
 
 Vue.config.productionTip = false
@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 new Application({
   router,
   store,
-  launch: () => Promise.resolve(),
+  launch,
   bootstrap: {
     provides,
     plugins,
