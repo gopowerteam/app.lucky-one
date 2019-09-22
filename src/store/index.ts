@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    name: '001',
     rooms: new Array(),
     history: new Array()
   },
@@ -16,9 +17,9 @@ export default new Vuex.Store({
     }
   },
   actions: {},
-  plugins:[
-     // 持久化存储插件
-     createPersistedState({
+  plugins: [
+    // 持久化存储插件
+    createPersistedState({
       key: 'vuex'
     })
   ]

@@ -1,6 +1,7 @@
 import AV from 'leancloud-storage'
 import md5 from 'crypto-js/md5'
 import store from '~/store'
+import { RealtimeUtil } from '@/shared/utils/realtime.util'
 const Room = AV.Object.extend('room')
 
 export class RoomService {
@@ -37,23 +38,19 @@ export class RoomService {
       .then(() => code)
   }
 
-
   /**
    * 启用房间
    */
   public async enable(token) {
     const room = new Room()
     const query = new AV.Query('room')
+    const realtimeUtil = new RealtimeUtil()
+    const target = await query.equalTo('token', token).first()
 
-    const target = await query
-      .equalTo('token', token)
-      .first()
-
-    
-
-    if(target){
-        room.set('enable',true)
-        room.save()
+    if (target) {
+      target.set('enable', true)
+      target.save()
+      realtimeUtil.createConversation(target.get('code'))
     }
   }
 
