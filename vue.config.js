@@ -1,13 +1,20 @@
-module.exports = {
-  lintOnSave: false,
+const aliasExtned = require('./extends/alias.extend')
 
+module.exports = {
+  lintOnSave: process.env.NODE_ENV !== 'production',
+  pages: {
+    index: {
+      entry: 'src/app.ts'
+    }
+  },
   pluginOptions: {
     quasar: {
       treeShake: true
     }
   },
-
-  transpileDependencies: [
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/
-  ]
+  transpileDependencies: [/[\\\/]node_modules[\\\/]quasar[\\\/]/],
+  chainWebpack: function(config) {
+    // 别名扩展
+    aliasExtned(config)
+  }
 }

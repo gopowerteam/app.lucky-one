@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = {
   allowBreakingChanges: ['feat', 'fix'],
@@ -7,42 +7,39 @@ module.exports = {
   types: [
     {
       value: 'wip',
-      name: '💪  WIP:      Work in progress'
+      name: '💪  WIP:      现在做一半,一会接着干',
     },
     {
       value: 'feat',
-      name: '✨  feat:     A new feature'
+      name: '✨  feat:     很高兴我又完成一个新功能',
     },
     {
       value: 'fix',
-      name: '🐞  fix:      A bug fix'
+      name: '🐞  fix:      我认为我修复了一个Bug',
     },
     {
       value: 'refactor',
-      name:
-        '🛠  refactor: A code change that neither fixes a bug nor adds a feature'
+      name: '🛠  refactor: 我对一些代码进行了重构',
     },
     {
       value: 'docs',
-      name: '📚  docs:     Documentation only changes'
+      name: '📚  docs:     我更新和修改了文档',
     },
     {
       value: 'test',
-      name: '🏁  test:     Add missing tests or correcting existing tests'
+      name: '🏁  test:     我做了和测试有关的工作',
     },
     {
       value: 'chore',
-      name:
-        "🗯  chore:    Changes that don't modify src or test files. Such as updating build tasks, package manager"
+      name: '🗯  chore:    我没有修改src目录,只是做了一些零散的事情',
     },
     {
       value: 'style',
-      name:
-        '💅  style:    Code Style, Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)'
+      name: '💅  style:    我优化了一些代码的样式风格',
     },
     {
       value: 'revert',
-      name: '⏪  revert:   Revert to a commit'
-    }
-  ]
-}
+      name: '⏪  revert:   我需要去回滚代码',
+    },
+  ],
+};

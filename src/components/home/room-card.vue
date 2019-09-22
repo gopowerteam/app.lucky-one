@@ -17,7 +17,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({
   name: 'RoomCard',
@@ -25,10 +25,10 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 export default class RoomCard extends Vue {
 
   @Prop({ default: '房间名称' })
-  private roomName!: string;
+  private roomName!: string
 
-  private cNum = 15;
-  private sNum = 20;
+  private cNum = 15
+  private sNum = 20
 
 }
 </script>

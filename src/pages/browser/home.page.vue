@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center home-page">
+  <q-page class="flex flex-center">
     <div class="home-container">
       <div class="create-room">
         <q-btn>创建房间</q-btn>
@@ -23,17 +23,35 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import RoomCard from '@/components/home/room-card.vue';
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { RoomService } from '../../services/room.service'
+import RoomCard from '@/components/home/room-card.vue'
 
 @Component({
-  name: 'PageHome',
-  components: {
-    RoomCard,
-  },
+  components:{
+    RoomCard
+  }
 })
 export default class HomePage extends Vue {
+  public roomService = new RoomService()
 
+  public mounted(){
+    // 添加房间
+    // this.roomService.create({
+    //   name:'test01',
+    //   password:'123123',
+    //   description:'',
+    //   limit:4,
+    //   repeat:false
+    // }).then(code=>{
+    //   //code 房间号已经存入store
+    //   console.log(code)
+    // })
+
+    // 查询房间
+    // this.roomService.query().then(rooms=>console.log(rooms))
+
+  }
 }
 </script>
 
