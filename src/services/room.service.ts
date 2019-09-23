@@ -1,6 +1,7 @@
 import AV from 'leancloud-storage'
 import md5 from 'crypto-js/md5'
 import store from '~/store'
+import { RoomInfo } from '~/models/room/room-info.model'
 const Room = AV.Object.extend('room')
 
 export class RoomService {
@@ -8,7 +9,7 @@ export class RoomService {
    * 创建房间
    * @param data
    */
-  public async create(data: { name: string; password: string; description: string; limit: number; repeat: boolean }) {
+  public async create(data: RoomInfo) {
     const room = new Room()
     const query = new AV.Query('room')
 
@@ -49,11 +50,11 @@ export class RoomService {
       .equalTo('token', token)
       .first()
 
-    
 
-    if(target){
-        room.set('enable',true)
-        room.save()
+
+    if (target) {
+      room.set('enable', true)
+      room.save()
     }
   }
 
@@ -66,6 +67,7 @@ export class RoomService {
 
     return query
       .containedIn('token', tokens)
+      .addDescending('updatedAt')
       .find()
       .then(list => list.map(item => item.toJSON()))
   }

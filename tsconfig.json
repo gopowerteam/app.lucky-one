@@ -14,12 +14,23 @@
     "downlevelIteration": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "paths": {
-      "@/*": ["src/*"],
-      "~/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "~/*": [
+        "src/*"
+      ]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
   },
   "include": [
     "src/**/*.ts",
@@ -29,7 +40,9 @@
     "tests/**/*.tsx",
     "typings/**/*.d.ts",
     "src/core/plugins/quasar.js",
-    "src/core/plugins/quasar.plugins.js"
+    "src/core/plugins/quasar.plugins.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

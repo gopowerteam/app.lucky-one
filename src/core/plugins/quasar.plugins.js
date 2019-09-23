@@ -18,7 +18,11 @@ import {
   QList,
   QItem,
   QItemSection,
-  QItemLabel
+  QItemLabel,
+  QDialog,
+  QInput,
+  QToggle,
+  QCard
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -36,7 +40,11 @@ Vue.use(Quasar, {
     QList,
     QItem,
     QItemSection,
-    QItemLabel
+    QItemLabel,
+    QDialog,
+    QInput,
+    QToggle,
+    QCard
   },
   directives: {},
   plugins: {},
