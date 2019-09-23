@@ -1,5 +1,5 @@
 <template>
-  <section class="room-card shadow-5">
+  <div class="room-card shadow-5">
     <div class="room-header">
       <q-icon name="img:/icons/home.svg" /> {{data.name}}
     </div>
@@ -10,7 +10,7 @@
       <div class="current-user">👨‍👨‍👦‍👦 {{cNum}}/{{sNum}}</div>
       <a class="inroom-btn">⚙进入</a>
     </div>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">

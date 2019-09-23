@@ -18,7 +18,7 @@ export class RoomService {
       .descending('code')
       .first()
       .then(x => (x ? parseInt(x.get('code'), 10) + 1 : 1))
-      .then(x => x.toString())
+    // .then(x => x.toString())
 
     const token = md5(code + data.password).toString()
 
@@ -29,7 +29,6 @@ export class RoomService {
     room.set('code', code)
     room.set('token', token)
     room.set('enable', false)
-
     return room
       .save()
       .then(() => {

@@ -4,12 +4,14 @@
       <div class="create-room">
         <q-btn outline color="white" @click="dialog.modify = true">创建房间</q-btn>
       </div>
-      <div class="rooms">
-        <room-card v-for="item of roomSet" :key="item.token" :data="item"></room-card>
-      </div>
+      <q-scroll-area class="rooms" horizontal ref="scrollArea">
+        <div class="row no-wrap">
+          <room-card v-for="item of roomSet" :key="item.token" :data="item"></room-card>
+        </div>
+      </q-scroll-area>
       <div class="nav-buttoms">
-        <q-btn>←</q-btn>
-        <q-btn>→</q-btn>
+        <q-btn @click="toLeft">←</q-btn>
+        <q-btn @click="toRight">→</q-btn>
       </div>
     </div>
 
@@ -29,11 +31,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '../../services/room.service'
 import RoomCard from '~/components/home/room-card.vue'
 import RoomModify from '~/components/home/room-modify.vue'
+import { QScrollArea } from 'quasar'
 
 @Component({
   components: {
     RoomCard,
-    RoomModify
+    RoomModify,
+    QScrollArea
   }
 })
 export default class HomePage extends Vue {
@@ -42,7 +46,10 @@ export default class HomePage extends Vue {
   private dialog = {
     modify: false
   }
+  private scrollArea !: QScrollArea
+
   public mounted() {
+    this.scrollArea = this.$refs.scrollArea as QScrollArea
     this.queryRooms()
   }
 
@@ -51,6 +58,16 @@ export default class HomePage extends Vue {
    */
   private queryRooms() {
     this.roomService.query().then(rooms => this.roomSet = rooms)
+  }
+
+  private toLeft() {
+    const offset = this.scrollArea.getScrollPosition()
+    this.scrollArea.setScrollPosition(offset - 230, 500)
+  }
+
+  private toRight() {
+    const offset = this.scrollArea.getScrollPosition()
+    this.scrollArea.setScrollPosition(offset + 230, 500)
   }
 }
 </script>
@@ -73,11 +90,13 @@ export default class HomePage extends Vue {
   }
   .rooms {
     padding-left: 100px;
-    white-space: nowrap;
-    overflow: hidden;
+    height: 310px;
+    width: 100%;
     .room-card {
-      margin: 15px 50px 15px 0;
-      display: inline-block;
+      margin: 10px;
+    }
+    .room-card + .room-card {
+      margin-left: 30px;
     }
   }
   .room-modify {
