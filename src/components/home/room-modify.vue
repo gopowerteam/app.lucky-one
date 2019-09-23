@@ -1,14 +1,13 @@
 <template>
-  <q-card class="room-modify shadow-5">
-    <div class="flex justify-between items-center" style="margin: 10px 20px">
+  <q-card class="room-modify shadow-5 bg-img">
+    <div class="flex justify-between items-center q-ma-md ">
       <q-btn @click="cancel">
         <q-icon name="img:/icons/back.svg" />
       </q-btn>
       <div class="text-h5">创建房间</div>
-      <q-btn outline color="white" type="submit" @click="submit">确定</q-btn>
+      <q-btn outline class="confirm-button" type="submit" @click="submit">确定</q-btn>
     </div>
-
-    <q-form class="form-container" ref="form">
+    <q-form class="q-ma-md" ref="form">
       <q-input filled label="房间名称" v-model="model.name" :rules="rules.name"></q-input>
       <q-input filled label="人数上限" v-model.number="model.limit" :rules="rules.limit" :min="0" type="number"></q-input>
       <q-input filled label="房间密码" v-model="model.password" :type="isPwd ? 'password' : 'text'" :rules="rules.password">
@@ -53,15 +52,16 @@ export default class RoomModify extends Vue {
   private model = new RoomInfo()
 
   @Emit()
-  private cancel() { }
+  private cancel() {
+    const form = this.$refs.form as QForm
+    this.model = new RoomInfo()
+    form.reset()
+  }
   @Emit()
   private success() {
     this.$q.notify({ color: 'teal', message: '创建房间成功', icon: 'tag_faces', position: 'top' })
-    const form = this.$refs.form as QForm
-    form.reset()
     this.cancel()
   }
-
   private async submit() {
     const form = this.$refs.form as QForm
     const result = await form.validate()
@@ -74,10 +74,12 @@ export default class RoomModify extends Vue {
 
 <style lang="less" scoped>
 .room-modify {
-  background: url('/img/home-bg.png') no-repeat;
-  background-size: cover;
-  .form-container {
-    margin: 20px;
+  .confirm-button {
+    &:hover {
+      color: purple !important;
+      border-color: purple;
+      background-color: white !important;
+    }
   }
 }
 </style>

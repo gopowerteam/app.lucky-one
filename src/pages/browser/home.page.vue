@@ -1,10 +1,10 @@
 <template>
-  <q-page class="flex flex-center home-page">
-    <div class="home-container shadow-15" v-show="!dialog.modify">
+  <q-page class="flex flex-center home-page bg-img">
+    <div class="home-container shadow-15  bg-img">
       <div class="create-room">
-        <q-btn outline color="white" @click="dialog.modify = true">创建房间</q-btn>
+        <q-btn outline class="confirm-button" @click="dialog.modify = true">创建房间</q-btn>
       </div>
-      <q-scroll-area class="rooms" horizontal ref="scrollArea">
+      <q-scroll-area class="rooms" horizontal ref="scrollArea" :thumb-style="{display:'none'}">
         <div class="row no-wrap">
           <room-card v-for="item of roomSet" :key="item.token" :data="item"></room-card>
         </div>
@@ -15,11 +15,9 @@
       </div>
     </div>
 
-    <room-modify v-show="dialog.modify" @cancel="dialog.modify = false" @success="queryRooms"></room-modify>
-
-    <!-- <q-dialog v-model="dialog.modify" persistent>
-      <room-modify @close="dialog.modify = false"></room-modify>
-    </q-dialog> -->
+    <q-dialog v-model="dialog.modify" persistent>
+      <room-modify style="width:700px;max-width:700px" @cancel="dialog.modify = false" @success="queryRooms"></room-modify>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -32,6 +30,7 @@ import { RoomService } from '../../services/room.service'
 import RoomCard from '~/components/home/room-card.vue'
 import RoomModify from '~/components/home/room-modify.vue'
 import { QScrollArea } from 'quasar'
+
 
 @Component({
   components: {
@@ -57,30 +56,28 @@ export default class HomePage extends Vue {
    * 查询房间
    */
   private queryRooms() {
+    this.scrollArea.setScrollPosition(0, 500)
     this.roomService.query().then(rooms => this.roomSet = rooms)
   }
 
   private toLeft() {
     const offset = this.scrollArea.getScrollPosition()
-    this.scrollArea.setScrollPosition(offset - 230, 500)
+    if (offset < 0) return
+    this.scrollArea.setScrollPosition(offset - 460, 500)
   }
 
   private toRight() {
     const offset = this.scrollArea.getScrollPosition()
-    this.scrollArea.setScrollPosition(offset + 230, 500)
+    this.scrollArea.setScrollPosition(offset + 460, 500)
   }
 }
 </script>
 
 <style lang="less" scoped>
 .home-page {
-  background: url('/img/home-bg.png') no-repeat;
-  background-size: cover;
   .home-container {
-    background: url('/img/home-bg.png') no-repeat;
-    background-size: cover;
     width: 70%;
-    height: 500px;
+    height: 600px;
     border-radius: 10px;
   }
   .create-room,
@@ -90,13 +87,17 @@ export default class HomePage extends Vue {
   }
   .rooms {
     padding-left: 100px;
-    height: 310px;
+    padding-top: 50px;
+    height: 410px;
     width: 100%;
     .room-card {
       margin: 10px;
     }
     .room-card + .room-card {
       margin-left: 30px;
+    }
+    .room-card:last-child {
+      margin-right: 30px;
     }
   }
   .room-modify {
