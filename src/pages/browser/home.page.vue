@@ -1,21 +1,23 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="home-container">
+  <q-page class="flex flex-center home-page">
+    <div class="home-container shadow-15" v-show="!dialog.modify">
       <div class="create-room">
-        <q-btn>创建房间</q-btn>
+        <q-btn outline color="white" @click="dialog.modify = true">创建房间</q-btn>
       </div>
       <div class="rooms">
-        <room-card></room-card>
-        <room-card roomName="房间2"></room-card>
-        <room-card roomName="房间3"></room-card>
-        <room-card roomName="房间4"></room-card>
-        <room-card roomName="房间5"></room-card>
+        <room-card v-for="item of roomSet" :key="item.token" :data="item"></room-card>
       </div>
       <div class="nav-buttoms">
         <q-btn>←</q-btn>
         <q-btn>→</q-btn>
       </div>
     </div>
+
+    <room-modify v-show="dialog.modify" @cancel="dialog.modify = false" @success="queryRooms"></room-modify>
+
+    <!-- <q-dialog v-model="dialog.modify" persistent>
+      <room-modify @close="dialog.modify = false"></room-modify>
+    </q-dialog> -->
   </q-page>
 </template>
 
@@ -25,42 +27,43 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '../../services/room.service'
-import RoomCard from '@/components/home/room-card.vue'
+import RoomCard from '~/components/home/room-card.vue'
+import RoomModify from '~/components/home/room-modify.vue'
 
 @Component({
-  components:{
-    RoomCard
+  components: {
+    RoomCard,
+    RoomModify
   }
 })
 export default class HomePage extends Vue {
   public roomService = new RoomService()
+  private roomSet: any[] = []
+  private dialog = {
+    modify: false
+  }
+  public mounted() {
+    this.queryRooms()
+  }
 
-  public mounted(){
-    // 添加房间
-    // this.roomService.create({
-    //   name:'test01',
-    //   password:'123123',
-    //   description:'',
-    //   limit:4,
-    //   repeat:false
-    // }).then(code=>{
-    //   //code 房间号已经存入store
-    //   console.log(code)
-    // })
-
-    // 查询房间
-    // this.roomService.query().then(rooms=>console.log(rooms))
-
+  /**
+   * 查询房间
+   */
+  private queryRooms() {
+    this.roomService.query().then(rooms => this.roomSet = rooms)
   }
 }
 </script>
 
 <style lang="less" scoped>
 .home-page {
+  background: url('/img/home-bg.png') no-repeat;
+  background-size: cover;
   .home-container {
+    background: url('/img/home-bg.png') no-repeat;
+    background-size: cover;
     width: 70%;
     height: 500px;
-    box-shadow: 0px 0px 25px 5px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
   }
   .create-room,
@@ -76,6 +79,9 @@ export default class HomePage extends Vue {
       margin: 15px 50px 15px 0;
       display: inline-block;
     }
+  }
+  .room-modify {
+    width: 70%;
   }
 }
 </style>

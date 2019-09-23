@@ -2,7 +2,7 @@
 //   // 可以使用 `VueConstructor` 接口
 //   // 来声明全局属性
 //   interface VueConstructor {
-//     $myGlobal: string
+//     $q: any
 //   }
 // }
 
