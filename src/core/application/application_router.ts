@@ -49,6 +49,7 @@ export class ApplicationRouter {
         store: this.store,
         router: this.router
       })
+      this.applicationStore.commit('ready')
     }
 
     next()

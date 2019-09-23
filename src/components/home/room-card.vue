@@ -1,11 +1,10 @@
 <template>
-  <section class="room-card shadow-5">
+  <section class="room-card shadow-5" @click="onOpenRoom">
     <div class="room-header">
-      <q-icon name="img:/icons/home.svg" /> {{data.name}}
+      <q-icon name="img:/icons/home.svg" />
+      {{data.name}}
     </div>
-    <div class="room-comment">
-      {{data.description}}
-    </div>
+    <div class="room-comment">{{data.description}}</div>
     <div class="room-footer row justify-between">
       <div class="current-user">👨‍👨‍👦‍👦 {{cNum}}/{{sNum}}</div>
       <a class="inroom-btn">⚙进入</a>
@@ -17,10 +16,9 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({
-  name: 'RoomCard',
+  name: 'RoomCard'
 })
 export default class RoomCard extends Vue {
-
   @Prop({ default: '房间名称' })
   private roomName!: string
 
@@ -30,6 +28,9 @@ export default class RoomCard extends Vue {
   private cNum = 15
   private sNum = 20
 
+  private onOpenRoom() {
+    this.$router.push({ name: 'room', params: { token: this.data.token } })
+  }
 }
 </script>
 
