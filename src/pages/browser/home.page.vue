@@ -57,10 +57,10 @@ export default class HomePage extends Vue {
 
 <style lang="less" scoped>
 .home-page {
-  background: url('/img/home-bg.jpg') no-repeat;
+  background: url('/img/home-bg.png') no-repeat;
   background-size: cover;
   .home-container {
-    background: url('/img/home-bg.jpg') no-repeat;
+    background: url('/img/home-bg.png') no-repeat;
     background-size: cover;
     width: 70%;
     height: 500px;

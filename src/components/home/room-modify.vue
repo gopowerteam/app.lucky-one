@@ -27,7 +27,7 @@
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { RoomInfo } from '~/models/room/room-info.model'
 import { RoomService } from '~/services/room.service'
-import { QForm } from 'quasar'
+import { QForm, colors } from 'quasar'
 
 @Component({
   name: 'RoomModify',
@@ -56,6 +56,7 @@ export default class RoomModify extends Vue {
   private cancel() { }
   @Emit()
   private success() {
+    this.$q.notify({ color: 'teal', message: '创建房间成功', icon: 'tag_faces', position: 'top' })
     const form = this.$refs.form as QForm
     form.reset()
     this.cancel()
@@ -73,7 +74,7 @@ export default class RoomModify extends Vue {
 
 <style lang="less" scoped>
 .room-modify {
-  background: url('/img/home-bg.jpg') no-repeat;
+  background: url('/img/home-bg.png') no-repeat;
   background-size: cover;
   .form-container {
     margin: 20px;
