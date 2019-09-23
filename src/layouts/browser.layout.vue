@@ -8,7 +8,7 @@
 
 <style lang="less" scoped>
 .browser-layout {
-  background: red;
+  //
 }
 </style>
 
@@ -16,5 +16,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component
-export default class BrowserLayout extends Vue {}
+export default class BrowserLayout extends Vue { }
 </script>
