@@ -6,17 +6,27 @@
     </div>
     <div class="room-comment ellipsis">{{data.description}}</div>
     <div class="room-footer row justify-between">
-      <div class="current-user text-blue-grey">👨‍👨 {{cNum}}/{{sNum}}</div>
-      <a class="text-blue-grey-10 cursor-pointer">⚙进入</a>
+      <div class="current-user text-blue-grey">
+        <q-icon name="emoji_people" size="1.5em" color="purple" />
+        {{cNum}}/{{data.limit || "无限制"}}
+      </div>
+      <a class="text-blue-grey-10 cursor-pointer" @click="dialog = true">⚙进入</a>
     </div>
+    <q-dialog v-model="dialog" persistent>
+      <room-detail style="width:700px;max-width:700px" :roomInfo="data" @cancel="dialog = false"></room-detail>
+    </q-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import RoomDetail from '~/components/home/room-detail.vue'
 
 @Component({
-  name: 'RoomCard'
+  name: 'RoomCard',
+  components: {
+    RoomDetail
+  }
 })
 export default class RoomCard extends Vue {
   @Prop({ default: '房间名称' })
@@ -27,6 +37,7 @@ export default class RoomCard extends Vue {
 
   private cNum = 15
   private sNum = 20
+  private dialog = false
 }
 </script>
 

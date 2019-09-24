@@ -1,9 +1,7 @@
 <template>
   <q-card class="room-modify shadow-5 bg-img">
     <div class="flex justify-between items-center q-ma-md">
-      <q-btn @click="cancel">
-        <q-icon name="img:/icons/back.svg" />
-      </q-btn>
+      <q-btn @click="cancel" icon="reply" />
       <div class="text-h5">创建房间</div>
       <q-btn outline class="confirm-button" type="submit" @click="submit">确定</q-btn>
     </div>

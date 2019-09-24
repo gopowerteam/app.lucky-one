@@ -10,8 +10,8 @@
         </div>
       </q-scroll-area>
       <div class="q-mb-xl q-pr-lg text-right" v-if="roomSet.length">
-        <q-btn @click="toLeft">←</q-btn>
-        <q-btn @click="toRight">→</q-btn>
+        <q-btn round class="cbg-to-right flip-horizontal" @click="toLeft" icon="arrow_right_alt"></q-btn>
+        <q-btn round class="cbg-to-right q-ml-sm" @click="toRight" icon="arrow_right_alt"></q-btn>
       </div>
     </div>
 
@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { RoomService } from '../../services/room.service'
+import { RoomService } from '~/services/room.service'
 import RoomCard from '~/components/home/room-card.vue'
 import RoomModify from '~/components/home/room-modify.vue'
 import { QScrollArea } from 'quasar'
