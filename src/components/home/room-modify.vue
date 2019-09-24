@@ -16,6 +16,7 @@
         type="number"
       ></q-input>
       <q-input
+        autocomplete="off"
         filled
         label="房间密码"
         v-model="model.password"
