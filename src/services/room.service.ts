@@ -37,7 +37,6 @@ export class RoomService {
       .then(() => code)
   }
 
-
   /**
    * 启用房间
    */
@@ -45,11 +44,7 @@ export class RoomService {
     const room = new Room()
     const query = new AV.Query('room')
 
-    const target = await query
-      .equalTo('token', token)
-      .first()
-
-
+    const target = await query.equalTo('token', token).first()
 
     if (target) {
       room.set('enable', true)
