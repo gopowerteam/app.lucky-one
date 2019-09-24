@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center home-page bg-img">
+  <q-page class="flex flex-center home-page">
     <div class="home-container shadow-24 bg-img column">
       <div class="q-mt-xl q-pr-lg text-right">
         <q-btn outline class="confirm-button" @click="dialog.modify = true">创建房间</q-btn>
@@ -38,8 +38,7 @@ import { QScrollArea } from 'quasar'
 @Component({
   components: {
     RoomCard,
-    RoomModify,
-    QScrollArea
+    RoomModify
   }
 })
 export default class HomePage extends Vue {

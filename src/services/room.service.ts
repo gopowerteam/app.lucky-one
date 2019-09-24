@@ -1,7 +1,7 @@
 import AV from 'leancloud-storage'
 import md5 from 'crypto-js/md5'
 import store from '~/store'
-import { RoomInfo } from '~/models/room/room-info.model'
+import { RoomInfoModel } from '~/models/room/room-info.model'
 import { RealtimeUtil } from '@/shared/utils/realtime.util'
 import { Conversation, Event } from 'leancloud-realtime'
 const Room = AV.Object.extend('room')
@@ -11,7 +11,7 @@ export class RoomService {
    * 创建房间
    * @param data
    */
-  public async create(data: RoomInfo) {
+  public async create(data: RoomInfoModel) {
     const room = new Room()
     const query = new AV.Query('room')
 

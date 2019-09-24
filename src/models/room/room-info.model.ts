@@ -1,4 +1,7 @@
-export class RoomInfo {
+/**
+ * 房间基本信息
+ */
+export class RoomInfoModel {
   /**
    * 房间名称
    */

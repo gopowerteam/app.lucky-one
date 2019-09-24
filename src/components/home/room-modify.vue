@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-import { RoomInfo } from '~/models/room/room-info.model'
+import { RoomInfoModel } from '~/models/room/room-info.model'
 import { RoomService } from '~/services/room.service'
 import { QForm, colors } from 'quasar'
 
@@ -59,12 +59,12 @@ export default class RoomModify extends Vue {
     password: [value => !!value || '请输入密码,以防止其他人修改房间属性']
   }
 
-  private model = new RoomInfo()
+  private model = new RoomInfoModel()
 
   @Emit()
   private cancel() {
     const form = this.$refs.form as QForm
-    this.model = new RoomInfo()
+    this.model = new RoomInfoModel()
     form.reset()
   }
   @Emit()
