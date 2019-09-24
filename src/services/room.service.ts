@@ -30,7 +30,6 @@ export class RoomService {
     room.set('code', code)
     room.set('token', token)
     room.set('enable', false)
-
     return room
       .save()
       .then(() => {
