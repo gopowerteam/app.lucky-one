@@ -18,7 +18,7 @@ export class RoomService {
       .descending('code')
       .first()
       .then(x => (x ? parseInt(x.get('code'), 10) + 1 : 1))
-      .then(x => x.toString())
+    // .then(x => x.toString())
 
     const token = md5(code + data.password).toString()
 
@@ -29,7 +29,6 @@ export class RoomService {
     room.set('code', code)
     room.set('token', token)
     room.set('enable', false)
-
     return room
       .save()
       .then(() => {
@@ -38,7 +37,6 @@ export class RoomService {
       .then(() => code)
   }
 
-
   /**
    * 启用房间
    */
@@ -46,11 +44,7 @@ export class RoomService {
     const room = new Room()
     const query = new AV.Query('room')
 
-    const target = await query
-      .equalTo('token', token)
-      .first()
-
-
+    const target = await query.equalTo('token', token).first()
 
     if (target) {
       room.set('enable', true)

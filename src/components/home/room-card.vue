@@ -1,26 +1,34 @@
 <template>
-  <section class="room-card shadow-5">
-    <div class="room-header">
-      <q-icon name="img:/icons/home.svg" /> {{data.name}}
+  <div class="room-card shadow-10 bg-white q-pa-lg">
+    <div class="room-header text-blue-grey-8 text-nowarp ellipsis">
+      <q-icon name="img:/icons/home.svg" />
+      {{data.name}}
     </div>
-    <div class="room-comment">
-      {{data.description}}
-    </div>
+    <div class="room-comment ellipsis">{{data.description}}</div>
     <div class="room-footer row justify-between">
-      <div class="current-user">👨‍👨‍👦‍👦 {{cNum}}/{{sNum}}</div>
-      <a class="inroom-btn">⚙进入</a>
+      <div class="current-user text-blue-grey">
+        <q-icon name="emoji_people" size="1.5em" color="purple" />
+        {{cNum}}/{{data.limit || "无限制"}}
+      </div>
+      <a class="text-blue-grey-10 cursor-pointer" @click="dialog = true">⚙进入</a>
     </div>
-  </section>
+    <q-dialog v-model="dialog" persistent>
+      <room-detail style="width:700px;max-width:700px" :roomInfo="data" @cancel="dialog = false"></room-detail>
+    </q-dialog>
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import RoomDetail from '~/components/home/room-detail.vue'
 
 @Component({
   name: 'RoomCard',
+  components: {
+    RoomDetail
+  }
 })
 export default class RoomCard extends Vue {
-
   @Prop({ default: '房间名称' })
   private roomName!: string
 
@@ -29,7 +37,7 @@ export default class RoomCard extends Vue {
 
   private cNum = 15
   private sNum = 20
-
+  private dialog = false
 }
 </script>
 
@@ -38,23 +46,14 @@ export default class RoomCard extends Vue {
   width: 200px;
   height: 280px;
   border-radius: 10px;
-  background-color: white;
-  padding: 10px;
   .room-header {
     height: 70px;
     line-height: 70px;
-    color: rgba(50, 60, 90, 1);
     font-size: 2em;
-    text-align: left;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
   .room-comment {
     line-height: 18px;
-    color: rgba(133, 145, 176, 1);
     font-size: 0.9em;
-    overflow: hidden;
     height: 140px;
     white-space: pre-wrap;
   }
@@ -62,12 +61,7 @@ export default class RoomCard extends Vue {
     height: 40px;
     line-height: 40px;
     .current-user {
-      color: rgba(133, 145, 176, 1);
       font-size: 0.9em;
-    }
-    .inroom-btn {
-      color: rgba(63, 71, 81, 1);
-      cursor: pointer;
     }
   }
 }
