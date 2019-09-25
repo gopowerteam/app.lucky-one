@@ -11,9 +11,6 @@ export class RealtimeUtil {
       await this.createClient()
     }
 
-    RealtimeUtil._client.on(Event.MEMBERS_JOINED, this.onMembersEvent)
-    RealtimeUtil._client.on(Event.MEMBERS_LEFT, this.onMembersEvent)
-    RealtimeUtil._client.on(Event.MESSAGE, this.onMessageEvent)
     return RealtimeUtil._client
   }
 
@@ -25,6 +22,9 @@ export class RealtimeUtil {
       .createIMClient(store.state.name)
       .then(client => {
         RealtimeUtil._client = client
+        RealtimeUtil._client.on(Event.MEMBERS_JOINED, this.onMembersEvent)
+        RealtimeUtil._client.on(Event.MEMBERS_LEFT, this.onMembersEvent)
+        RealtimeUtil._client.on(Event.MESSAGE, this.onMessageEvent)
       })
       .catch(console.error)
   }

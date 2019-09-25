@@ -9,6 +9,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import { RoomInfo } from '../../models/room/room-info.model'
+import { RoomEntity } from '../../entity/room.entity'
 
 @Component({
   components: {}
@@ -17,16 +18,15 @@ export default class RoomPage extends Vue {
   @Prop()
   private token
 
-  private room
+  private room?: RoomEntity
 
   private roomService = new RoomService()
 
   public async mounted() {
-    this.room = await this.roomService.get(this.token)
+    this.room = await this.roomService.getRoom(this.token)
 
-    if (!this.room.enable) {
-      await this.roomService.enable(this.token)
-      this.room = await this.roomService.get(this.token)
+    if (this.room.getEnable()) {
+      await this.room.setEnable()
     }
   }
 }
