@@ -9,14 +9,21 @@
       <div class="row justify-between q-ma-md">
         <div class="current-user text-blue-gary-10 q-ml-md">
           <q-icon name="emoji_people" size="1.5em" color="purple" />
-          {{cNum}}/{{roomDetail.limit || "无限制"}}
+          {{cNum}}/{{ roomDetail.limit || "无限制"}}
         </div>
         <a class="cursor-pointer" @click="dialog.awardModify = true">创建奖项</a>
       </div>
 
       <div class="content q-mx-lg row">
         <q-scroll-area class="award-list overflow-scroll q-card" style="height:460px">
-          <award-status v-for="(item,index) of awardList" :key="index" v-bind="item"></award-status>
+          <div v-if="!awardList.length">暂无奖项</div>
+          <award-status
+            v-else
+            v-for="(item,index) of awardList"
+            :limit="roomDetail.limit"
+            :key="index"
+            :data="item"
+          ></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
           <q-avatar v-for="i in 100" :key="i" class="q-ma-sm" color="deep-purple">{{i}}</q-avatar>
@@ -39,6 +46,7 @@ import { QAvatar, colors } from 'quasar'
 import { RealtimeUtil } from '~/shared/utils/realtime.util'
 import { ConversationBase } from 'leancloud-realtime'
 import AwardModify from '~/components/award/award-modify.vue'
+import { AwardDetailModel } from '~/models/award/award-detail.model'
 
 @Component({
   components: {
@@ -59,11 +67,8 @@ export default class RoomPage extends Vue {
     awardModify: false
   }
 
-  private awardList = [
-    { name: '三等奖', count: 40, status: '已开奖' },
-    { name: '二等奖', count: 10, status: '已开奖' },
-    { name: '一等奖', count: 3, status: '已开奖' },
-    { name: '特等奖', count: 1, status: '待开奖' }
+  private awardList: Array<AwardDetailModel> = [
+    { name: '二等奖', count: 3, userIds: [], awardId: 'test', roomId: '123312', description: '' }
   ]
 
   public async mounted() {
