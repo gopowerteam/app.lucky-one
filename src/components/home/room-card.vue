@@ -17,6 +17,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { RoomDetailModel } from '../../models/room/room-detail.model'
+import { Entity } from '~/entity'
+import { RoomEntity } from '../../entity/room.entity'
 
 @Component({
   name: 'RoomCard',
@@ -27,7 +30,7 @@ export default class RoomCard extends Vue {
   private roomName!: string
 
   @Prop()
-  private data: any
+  private data!: RoomDetailModel
 
   private cNum = 15
   private sNum = 20
@@ -35,6 +38,14 @@ export default class RoomCard extends Vue {
 
   private onOpenRoom() {
     this.$router.push({ name: 'room', params: { token: this.data.token } })
+  }
+
+  private mounted() {
+    const roomEntity = Entity.from(this.data, RoomEntity)
+    roomEntity.getConversation().then(value => {
+      if (!value) return
+      this.cNum = value.members.length
+    })
   }
 }
 </script>

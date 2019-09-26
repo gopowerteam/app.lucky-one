@@ -9,7 +9,7 @@
       <div class="row justify-between q-ma-md">
         <div class="current-user text-blue-gary-10 q-ml-md">
           <q-icon name="emoji_people" size="1.5em" color="purple" />
-          {{cNum}}/{{ roomDetail.limit || "无限制"}}
+          {{cNum}}/{{roomDetail.limit || "无限制"}}
         </div>
         <a class="cursor-pointer" @click="dialog.awardModify = true">创建奖项</a>
       </div>
@@ -17,13 +17,7 @@
       <div class="content q-mx-lg row">
         <q-scroll-area class="award-list overflow-scroll q-card" style="height:460px">
           <div v-if="!awardList.length">暂无奖项</div>
-          <award-status
-            v-else
-            v-for="(item,index) of awardList"
-            :limit="roomDetail.limit"
-            :key="index"
-            :data="item"
-          ></award-status>
+          <award-status v-else v-for="(item,index) of awardList" :key="index" :data="item"></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
           <q-avatar v-for="i in 100" :key="i" class="q-ma-sm" color="deep-purple">{{i}}</q-avatar>
@@ -72,12 +66,13 @@ export default class RoomPage extends Vue {
   ]
 
   public async mounted() {
-    this.roomDetail = await this.roomService.get(this.token)
-    if (!this.roomDetail.enable) {
-      await this.roomService.enable(this.token)
-      this.roomDetail = await this.roomService.get(this.token)
+    const roomEntity = await this.roomService.getRoom(this.token)
+    if (roomEntity.getEnable()) {
+      await roomEntity.setEnable()
     }
-    const conversation = await this.realtime.getConversation(this.roomDetail.conversation)
+    // this.roomDetail =  romEntity.get as RoomDetailModel
+    console.log(roomEntity)
+    const conversation = await roomEntity.getConversation()
     if (!conversation) return
     this.realtime.addUserListener(conversation).subscribe(data => {})
   }

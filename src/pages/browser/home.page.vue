@@ -59,7 +59,7 @@ export default class HomePage extends Vue {
    */
   private queryRooms() {
     this.scrollArea.setScrollPosition(0, 500)
-    this.roomService.query().then(rooms => (this.roomSet = rooms))
+    this.roomService.getRoomList().then(rooms => (this.roomSet = rooms))
   }
 
   private toLeft() {
