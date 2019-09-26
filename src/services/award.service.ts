@@ -8,7 +8,7 @@ const Award = AV.Object.extend('Award')
 export class AwardService {
   /**
    * 获取奖项
-   * @param id 
+   * @param id
    */
   public async getAward(id) {
     const query = new AV.Query('award')
@@ -18,9 +18,9 @@ export class AwardService {
 
   /**
    * 设置奖项结果
-   * @param award 
-   * @param count 
-   * @param exclude 
+   * @param award
+   * @param count
+   * @param exclude
    */
   public async setResult(award, count = 1, exclude) {
     const roomEntity = Entity.from(award.get('room'), RoomEntity)
@@ -30,6 +30,10 @@ export class AwardService {
       throw Error('房间未启用')
     }
 
+    if (conversation.members.length < count) {
+      throw Error('开奖用户不足')
+    }
+    
     // 抽取中奖用户
     const result = conversation.members
       .map(x => ({ id: x, seed: Math.random() }))
@@ -43,8 +47,8 @@ export class AwardService {
 
   /**
    * 创建奖项
-   * @param room 
-   * @param param1 
+   * @param room
+   * @param param1
    */
   public async create(room, { name, count }) {
     const award = new Award()

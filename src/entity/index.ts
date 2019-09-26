@@ -37,20 +37,20 @@ export class Entity {
     return this.object.attributes
   }
 
-  public get fetch() {
-    return this.object.fetch
-  }
-
-  public get set() {
-    return this.object.set
-  }
-
   public get get() {
     return this.object.get
   }
 
+  public get set() {
+    return this._object.set.bind(this._object)
+  }
+
   public get save() {
-    return this._object.save
+    return this._object.save.bind(this._object)
+  }
+
+  public get fetch() {
+    return this._object.fetch.bind(this._object)
   }
 
   public valid() {

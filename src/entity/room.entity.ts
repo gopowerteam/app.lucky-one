@@ -4,12 +4,14 @@ import { RealtimeUtil } from '@/shared/utils/realtime.util'
 import { ConversationBase } from 'leancloud-realtime'
 import { RoomService } from '@/services/room.service'
 import { AwardService } from '@/services/award.service'
+import { Observable } from 'rxjs'
 
 export class RoomEntity extends Entity {
+  private realtimeUtil = new RealtimeUtil()
   /**
    * 会话实例
    */
-  private conversation?:ConversationBase
+  private _conversation?: ConversationBase
 
   public getEnable() {
     return this.get('enable')
@@ -22,26 +24,24 @@ export class RoomEntity extends Entity {
     const realtimeUtil = new RealtimeUtil()
 
     if (this.valid) {
-      this.conversation = await realtimeUtil.createConversation(this.attributes.code.toString())
-      this.set('conversation', this.conversation.id)
+      this._conversation = await realtimeUtil.createConversation(this.attributes.code.toString())
+      this.set('conversation', this._conversation.id)
       this.set('enable', true)
       await this.save()
     }
   }
 
   /**
-   * 
+   * 获取并加入会话
    */
-  public async getConversation(): Promise<void | ConversationBase> {
-    const realtimeUtil = new RealtimeUtil()
-
-    if (this.conversation) {
-      return this.conversation
+  public async getConversation(): Promise<ConversationBase> {
+    if (this._conversation) {
+      return this._conversation
     }
 
     if (this.attributes.enable && this.valid) {
-      const conversation = await realtimeUtil.getConversation(this.attributes.conversation)
-      this.conversation = conversation as ConversationBase
+      this._conversation = (await this.realtimeUtil.getConversation(this.attributes.conversation)) as ConversationBase
+      return this._conversation
     } else {
       throw new Error('当前会话未启用')
     }
@@ -49,12 +49,34 @@ export class RoomEntity extends Entity {
 
   /**
    * 创建奖
-   *  
-   *         
-   * @param params 
+   *
+   *
+   * @param params
    */
-  public createAward(params){
+  public createAward(params) {
     const awardService = new AwardService()
-    return awardService.create(this.object,params)
+    return awardService.create(this.object, params)
+  }
+
+  /**
+   * 添加消息监听
+   */
+  public addMessageListener(): Observable<any> {
+    if (!this._conversation) {
+      return Observable.throw(new Error('会话不存在'))
+    }
+
+    return this.realtimeUtil.addUMessageListener(this._conversation)
+  }
+
+  /**
+   * 添加用户监听
+   */
+  public addUserListener(): Observable<any> {
+    if (!this._conversation) {
+      return Observable.throw(new Error('会话不存在'))
+    }
+
+    return this.realtimeUtil.addUserListener(this._conversation)
   }
 }

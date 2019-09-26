@@ -8,9 +8,10 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
-import { RoomInfo } from '../../models/room/room-info.model'
 import { RoomEntity } from '../../entity/room.entity'
-import { Message, TextMessage } from 'leancloud-realtime'
+import { ConversationBase } from 'leancloud-realtime'
+
+// let randomName = require('chinese-random-name')
 
 @Component({
   components: {}
@@ -18,23 +19,19 @@ import { Message, TextMessage } from 'leancloud-realtime'
 export default class RoomPage extends Vue {
   @Prop()
   private token
-
   private room?: RoomEntity
-
+  private conversation?: ConversationBase
   private roomService = new RoomService()
 
   public async mounted() {
+    // 获取房间信息
     this.room = await this.roomService.getRoom(this.token)
-
-    if (!this.room.getEnable()) {
-      await this.room.setEnable()
-    }
-
-    const conversation = await this.room.getConversation()
-
-    setTimeout(() => {
-      conversation.send(new TextMessage('asdasd'))
-    }, 3000)
+    // 获取会话信息
+    this.conversation = await this.room.getConversation()
+    this.room.addUserListener().subscribe(members => {
+    })
+    this.room.addMessageListener().subscribe((...members) => {
+    })
   }
 }
 </script>
