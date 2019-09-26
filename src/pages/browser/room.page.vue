@@ -3,13 +3,13 @@
     <div class="room-container shadow-5 bg-img">
       <div class="flex justify-between items-center q-ma-md">
         <q-btn @click="back" icon="reply" />
-        <div class="text-h5">{{roomDetail.name}}</div>
+        <div class="text-h5">{{data.name}}</div>
         <q-btn icon="share"></q-btn>
       </div>
       <div class="row justify-between q-ma-md">
         <div class="current-user text-blue-gary-10 q-ml-md">
           <q-icon name="emoji_people" size="1.5em" color="purple" />
-          {{cNum}}/{{roomDetail.limit || "无限制"}}
+          {{cNum}}/{{data.limit || "无限制"}}
         </div>
         <a class="cursor-pointer" @click="dialog.awardModify = true">创建奖项</a>
       </div>
@@ -26,7 +26,11 @@
     </div>
 
     <q-dialog v-model="dialog.awardModify">
-      <award-modify style="width:600px;max-width:600px" @cancel="dialog.awardModify = false"></award-modify>
+      <award-modify
+        style="width:600px;max-width:600px"
+        :token="data.token"
+        @cancel="dialog.awardModify = false"
+      ></award-modify>
     </q-dialog>
   </q-page>
 </template>
@@ -34,13 +38,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
-import { RoomDetailModel } from '~/models/room/room-detail.model'
 import AwardStatus from '~/components/award/award-status.vue'
 import { QAvatar, colors } from 'quasar'
 import { RealtimeUtil } from '~/shared/utils/realtime.util'
 import { ConversationBase } from 'leancloud-realtime'
 import AwardModify from '~/components/award/award-modify.vue'
 import { AwardDetailModel } from '~/models/award/award-detail.model'
+import { RoomDetailModel } from '~/models/room/room-detail.model'
+import { AwardService } from '~/services/award.service'
 
 @Component({
   components: {
@@ -53,28 +58,29 @@ export default class RoomPage extends Vue {
   @Prop()
   private token
 
-  private roomDetail = new RoomDetailModel()
   private roomService = new RoomService()
+  private awardService = new AwardService()
   private realtime = new RealtimeUtil()
   private cNum = 0
   private dialog = {
     awardModify: false
   }
 
-  private awardList: Array<AwardDetailModel> = [
-    { name: '二等奖', count: 3, userIds: [], awardId: 'test', roomId: '123312', description: '' }
-  ]
+  private data = new RoomDetailModel()
+
+  private awardList: Array<AwardDetailModel> = []
 
   public async mounted() {
+    this.awardList = await this.awardService.queryAwards(this.data.token)
     const roomEntity = await this.roomService.getRoom(this.token)
+    this.data = roomEntity.attributes as RoomDetailModel
     if (roomEntity.getEnable()) {
       await roomEntity.setEnable()
     }
-    // this.roomDetail =  romEntity.get as RoomDetailModel
-    console.log(roomEntity)
-    const conversation = await roomEntity.getConversation()
-    if (!conversation) return
-    this.realtime.addUserListener(conversation).subscribe(data => {})
+    roomEntity.getConversation().then(conversation => {
+      if (!conversation) return
+      this.cNum = conversation.members.length
+    })
   }
 
   private back() {

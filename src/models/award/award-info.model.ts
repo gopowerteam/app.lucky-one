@@ -15,7 +15,7 @@ export class AwardInfoModel {
   public description = ''
 
   /**
-   * 房间ID
+   * 房间Token
    */
-  public roomId = ''
+  public token = ''
 }

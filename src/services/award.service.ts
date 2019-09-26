@@ -2,6 +2,7 @@ import AV from 'leancloud-storage'
 import md5 from 'crypto-js/md5'
 import store from '~/store'
 import { AwardInfoModel } from '~/models/award/award-info.model'
+import { AwardDetailModel } from '~/models/award/award-detail.model'
 const Arard = AV.Object.extend('award')
 
 /**
@@ -17,10 +18,9 @@ export class AwardService {
     const query = new AV.Query('award')
 
     const count = await query
-      .equalTo('roomId', data.roomId)
+      .equalTo('token', data.token)
       .equalTo('name', data.name)
       .count()
-
     if (count) return Promise.reject('已经存在该奖项')
 
     Object.entries(data).forEach(([key, value]) => {
@@ -28,5 +28,13 @@ export class AwardService {
     })
 
     return award.save()
+  }
+
+  public queryAwards(roomToken: string) {
+    const query = new AV.Query('award')
+    return query
+      .equalTo('token', roomToken)
+      .find()
+      .then(q => q.map(v => v.toJSON() as AwardDetailModel))
   }
 }

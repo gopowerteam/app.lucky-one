@@ -1,22 +1,27 @@
-import AV from 'leancloud-storage'
+import AV, { Query } from 'leancloud-storage'
 import md5 from 'crypto-js/md5'
 import store from '~/store'
-import { RoomInfoModel } from '~/models/room/room-info.model'
 import { Entity } from '~/entity'
 import { RoomEntity } from '~/entity/room.entity'
+import { RoomInfoModel } from '~/models/room/room-info.model'
 const Room = AV.Object.extend('room')
 
 export class RoomService {
+  private query: Query<AV.Object>
+
+  public constructor() {
+    this.query = new AV.Query('room')
+  }
+
   /**
    * 创建房间
    * @param data
    */
   public async create(data: RoomInfoModel) {
     const room = new Room()
-    const query = new AV.Query('room')
 
     // 生成房间号
-    const code = await query
+    const code = await this.query
       .select(['code'])
       .descending('code')
       .first()
@@ -56,11 +61,11 @@ export class RoomService {
    * @param token
    */
   public async getRoom(token) {
-    const query = new AV.Query('room')
-
     // 获取房间信息
-    const room = (await query.equalTo('token', token).first()) as AV.Object
-
+    const room = await this.query.equalTo('token', token).first()
+    if (!room) {
+      throw new Error('token 异常')
+    }
     return Entity.from(room, RoomEntity)
   }
 
@@ -68,12 +73,12 @@ export class RoomService {
    * 获取房间列表
    */
   public async getRoomList() {
-    const query = new AV.Query('room')
     const tokens = store.state.rooms
 
-    return query
+    return this.query
       .containedIn('token', tokens)
       .addDescending('updatedAt')
       .find()
+      .then(list => list.map(room => Entity.from(room, RoomEntity)))
   }
 }

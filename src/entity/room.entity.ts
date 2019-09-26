@@ -10,7 +10,7 @@ export class RoomEntity extends Entity {
   private conversation
 
   public getEnable() {
-    return this.get('enable')
+    return this.get('enable') as boolean
   }
 
   /**
@@ -37,9 +37,8 @@ export class RoomEntity extends Entity {
     if (this.attributes.enable && this.valid) {
       this.conversation = await realtimeUtil.getConversation(this.attributes.conversation)
     } else {
-      throw new Error('当前会话未启用')
+      return Promise.reject('当前会话未启用')
     }
-
     return this.conversation
   }
 }

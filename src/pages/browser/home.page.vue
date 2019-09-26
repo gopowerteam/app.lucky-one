@@ -6,7 +6,12 @@
       </div>
       <q-scroll-area class="rooms" horizontal ref="scrollArea" :thumb-style="{display:'none'}">
         <div class="row no-wrap full-height items-center">
-          <room-card class="q-ma-md q-mr-xl" v-for="item of roomSet" :key="item.token" :data="item"></room-card>
+          <room-card
+            class="q-ma-md q-mr-xl"
+            v-for="(item,index) of roomSet"
+            :key="index"
+            :entity="item"
+          ></room-card>
         </div>
       </q-scroll-area>
       <div class="q-mb-xl q-pr-lg text-right" v-if="roomSet.length">

@@ -1,5 +1,5 @@
 <template>
-  <section class="room-card q-pa-md shadow-5" @click="onOpenRoom">
+  <section class="room-card q-pa-md shadow-5 bg-white" @click="onOpenRoom">
     <div class="room-header text-no-warp ellipsis">
       <q-icon name="img:/icons/home.svg" />
       {{data.name}}
@@ -17,35 +17,34 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { RoomDetailModel } from '../../models/room/room-detail.model'
-import { Entity } from '~/entity'
-import { RoomEntity } from '../../entity/room.entity'
+import { RoomEntity } from '~/entity/room.entity'
+import { RoomDetailModel } from '~/models/room/room-detail.model'
 
 @Component({
   name: 'RoomCard',
   components: {}
 })
 export default class RoomCard extends Vue {
-  @Prop({ default: '房间名称' })
-  private roomName!: string
+  @Prop({ required: true })
+  private entity!: RoomEntity
 
-  @Prop()
-  private data!: RoomDetailModel
-
-  private cNum = 15
-  private sNum = 20
+  private cNum = 0
   private dialog = false
+  private data = new RoomDetailModel()
 
   private onOpenRoom() {
     this.$router.push({ name: 'room', params: { token: this.data.token } })
   }
 
   private mounted() {
-    const roomEntity = Entity.from(this.data, RoomEntity)
-    roomEntity.getConversation().then(value => {
-      if (!value) return
-      this.cNum = value.members.length
-    })
+    this.data = this.entity.attributes as RoomDetailModel
+    this.entity
+      .getConversation()
+      .then(value => {
+        if (!value) return
+        this.cNum = value.members.length
+      })
+      .catch(() => {})
   }
 }
 </script>

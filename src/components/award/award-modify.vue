@@ -25,6 +25,7 @@ import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import { QForm, colors } from 'quasar'
 import { AwardInfoModel } from '~/models/award/award-info.model'
+import { AwardService } from '~/services/award.service'
 
 @Component({
   name: 'AwardModify',
@@ -33,7 +34,10 @@ import { AwardInfoModel } from '~/models/award/award-info.model'
   }
 })
 export default class AwardModify extends Vue {
-  public roomService = new RoomService()
+  private awardService = new AwardService()
+
+  @Prop()
+  private token!: string
 
   private rules = {
     name: [value => !!value || '请输入奖项名称'],
@@ -54,10 +58,14 @@ export default class AwardModify extends Vue {
     this.cancel()
   }
   private async submit() {
-    // const form = this.$refs.form as QForm
-    // const result = await form.validate()
-    // if (!result) return
-    // this.roomService.create(this.model).then(this.success)
+    const form = this.$refs.form as QForm
+    const result = await form.validate()
+    if (!result) return
+    this.model.token = this.token
+    this.awardService
+      .create(this.model)
+      .then(this.success)
+      .catch(r => this.$q.notify({ message: r }))
   }
 }
 </script>
