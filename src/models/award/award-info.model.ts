@@ -18,4 +18,9 @@ export class AwardInfoModel {
    * 房间Token
    */
   public token = ''
+
+  /**
+   * 中奖者名单
+   */
+  public userIds: Array<string> = []
 }

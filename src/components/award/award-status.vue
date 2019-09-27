@@ -14,24 +14,25 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { AwardDetailModel } from '../../models/award/award-detail.model'
+import { AwardInfoModel } from '~/models/award/award-info.model'
 @Component({
   name: 'AwardStatus'
 })
 export default class AwardStatus extends Vue {
   @Prop()
-  private data!: AwardDetailModel
+  private data!: AwardInfoModel & { objectId: string }
 
   @Prop()
   private limit!: number
 
   private get status() {
+    if (!this.data.userIds) return false
     return this.data.count === this.data.userIds.length
   }
 
   private startDrawClick() {
     if (this.status) return
-    this.$router.push({ name: 'draw', params: { awardId: this.data.awardId, limit: this.limit.toString() } })
+    this.$router.push({ name: 'draw', params: { awardId: this.data.objectId, limit: this.limit.toString() } })
   }
 }
 </script>

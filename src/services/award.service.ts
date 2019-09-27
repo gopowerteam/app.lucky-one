@@ -2,7 +2,6 @@ import AV from 'leancloud-storage'
 import md5 from 'crypto-js/md5'
 import store from '~/store'
 import { AwardInfoModel } from '~/models/award/award-info.model'
-import { AwardDetailModel } from '~/models/award/award-detail.model'
 const Arard = AV.Object.extend('award')
 
 /**
@@ -30,11 +29,24 @@ export class AwardService {
     return award.save()
   }
 
+  /**
+   * 根据房间token查询奖项列表
+   * @param roomToken
+   */
   public queryAwards(roomToken: string) {
     const query = new AV.Query('award')
     return query
       .equalTo('token', roomToken)
       .find()
-      .then(q => q.map(v => v.toJSON() as AwardDetailModel))
+      .then(q => q.map(v => v.toJSON() as AwardInfoModel))
+  }
+
+  /**
+   * 获取奖项详情
+   * @param objectId
+   */
+  public getAwardDetail(objectId: string) {
+    const query = new AV.Query('award')
+    return query.get(objectId).then(q => q.toJSON() as AwardInfoModel)
   }
 }

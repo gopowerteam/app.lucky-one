@@ -17,7 +17,13 @@
       <div class="content q-mx-lg row">
         <q-scroll-area class="award-list overflow-scroll q-card" style="height:460px">
           <div v-if="!awardList.length">暂无奖项</div>
-          <award-status v-else v-for="(item,index) of awardList" :key="index" :data="item"></award-status>
+          <award-status
+            v-else
+            v-for="(award,index) of awardList"
+            :key="index"
+            :data="award"
+            :limit="data.limit"
+          ></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
           <q-avatar v-for="i in 100" :key="i" class="q-ma-sm" color="deep-purple">{{i}}</q-avatar>
@@ -30,6 +36,7 @@
         style="width:600px;max-width:600px"
         :token="data.token"
         @cancel="dialog.awardModify = false"
+        @success="refreshData"
       ></award-modify>
     </q-dialog>
   </q-page>
@@ -40,10 +47,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import AwardStatus from '~/components/award/award-status.vue'
 import { QAvatar, colors } from 'quasar'
-import { RealtimeUtil } from '~/shared/utils/realtime.util'
-import { ConversationBase } from 'leancloud-realtime'
 import AwardModify from '~/components/award/award-modify.vue'
-import { AwardDetailModel } from '~/models/award/award-detail.model'
+import { AwardInfoModel } from '~/models/award/award-info.model'
 import { RoomDetailModel } from '~/models/room/room-detail.model'
 import { AwardService } from '~/services/award.service'
 
@@ -60,7 +65,6 @@ export default class RoomPage extends Vue {
 
   private roomService = new RoomService()
   private awardService = new AwardService()
-  private realtime = new RealtimeUtil()
   private cNum = 0
   private dialog = {
     awardModify: false
@@ -68,10 +72,10 @@ export default class RoomPage extends Vue {
 
   private data = new RoomDetailModel()
 
-  private awardList: Array<AwardDetailModel> = []
+  private awardList: Array<AwardInfoModel> = []
 
   public async mounted() {
-    this.awardList = await this.awardService.queryAwards(this.data.token)
+    this.refreshData()
     const roomEntity = await this.roomService.getRoom(this.token)
     this.data = roomEntity.attributes as RoomDetailModel
     if (roomEntity.getEnable()) {
@@ -81,6 +85,14 @@ export default class RoomPage extends Vue {
       if (!conversation) return
       this.cNum = conversation.members.length
     })
+  }
+
+  public activated() {
+    this.refreshData()
+  }
+
+  public refreshData() {
+    this.awardService.queryAwards(this.token).then(data => (this.awardList = data))
   }
 
   private back() {

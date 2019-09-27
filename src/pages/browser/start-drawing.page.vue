@@ -33,10 +33,11 @@ import AwardStatus from '~/components/award/award-status.vue'
 import { QAvatar, colors } from 'quasar'
 import { RealtimeUtil } from '~/shared/utils/realtime.util'
 import { ConversationBase } from 'leancloud-realtime'
-import { AwardDetailModel } from '~/models/award/award-detail.model'
+import { AwardInfoModel } from '~/models/award/award-info.model'
 import { RoomDetailModel } from '~/models/room/room-detail.model'
-import { timer, range, Observable, generate, observable, Subscription } from 'rxjs'
-import { filter, count, last } from 'rxjs/operators'
+import { timer, range, Observable, generate, observable, Subscription, from, interval, bindCallback } from 'rxjs'
+import { filter, count, last, delay, scan, take } from 'rxjs/operators'
+import { AwardService } from '~/services/award.service'
 
 @Component({
   components: {
@@ -51,7 +52,8 @@ export default class RoomPage extends Vue {
   @Prop()
   private limit!: string
 
-  private awardDetailModel = new AwardDetailModel()
+  private awardService = new AwardService()
+  private awardDetailModel = new AwardInfoModel()
   private realtimeUtil = new RealtimeUtil()
   private cNum = 20
   private drawFlag = false
@@ -65,13 +67,7 @@ export default class RoomPage extends Vue {
   }
 
   private async mounted() {
-    this.awardDetailModel.name = '二等奖'
-    this.awardDetailModel.count = 8
-    // this.realtimeUtil.getConversation(this.awardDetailModel.roomId).then(
-    //   (data:ConversationBase) =>{
-    //     data.queryMessages()
-    //   }
-    // )
+    this.awardDetailModel = await this.awardService.getAwardDetail(this.awardId)
   }
 
   private luckDrawClick() {
