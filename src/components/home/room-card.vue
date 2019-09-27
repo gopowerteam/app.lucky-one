@@ -33,7 +33,7 @@ export default class RoomCard extends Vue {
   private data = new RoomDetailModel()
 
   private onOpenRoom() {
-    this.$router.push({ name: 'room', params: { token: this.data.token } })
+    this.$router.push({ name: 'host-room', params: { token: this.data.token } })
   }
 
   private mounted() {

@@ -1,52 +1,71 @@
 import AV from 'leancloud-storage'
-import md5 from 'crypto-js/md5'
-import store from '~/store'
-import { AwardInfoModel } from '~/models/award/award-info.model'
-const Arard = AV.Object.extend('award')
+import { Entity } from '@/entity'
+import { AwardEntity } from '@/entity/award.entity'
+import { RoomEntity } from '@/entity/room.entity'
 
-/**
- * 奖项数据存储服务
- */
+const Award = AV.Object.extend('award')
+
 export class AwardService {
   /**
-   * 创建房间
-   * @param data
+   * 获取奖项
+   * @param id
    */
-  public async create(data: AwardInfoModel) {
-    const award = new Arard()
+  public async getAward(id) {
     const query = new AV.Query('award')
+    const award = await query.equalTo('id', id).first()
+    return Entity.from(award, AwardEntity)
+  }
 
-    const count = await query
-      .equalTo('token', data.token)
-      .equalTo('name', data.name)
-      .count()
-    if (count) return Promise.reject('已经存在该奖项')
+  /**
+   * 设置奖项结果
+   * @param award
+   * @param count
+   * @param exclude
+   */
+  public async setResult(award, count = 1, exclude) {
+    const roomEntity = Entity.from(award.get('room'), RoomEntity)
+    const conversation = await roomEntity.getConversation()
 
-    Object.entries(data).forEach(([key, value]) => {
-      award.set(key, value)
-    })
+    if (!conversation) {
+      throw Error('房间未启用')
+    }
+
+    if (conversation.members.length < count) {
+      throw Error('开奖用户不足')
+    }
+
+    // 抽取中奖用户
+    const result = conversation.members
+      .map(x => ({ id: x, seed: Math.random() }))
+      .sort((x, y) => x.seed - y.seed)
+      .slice(0, count)
+    award.set('result', result)
+    award.set('finish', true)
 
     return award.save()
   }
 
   /**
-   * 根据房间token查询奖项列表
-   * @param roomToken
+   * 创建奖项
+   * @param room
+   * @param param1
    */
-  public queryAwards(roomToken: string) {
-    const query = new AV.Query('award')
-    return query
-      .equalTo('token', roomToken)
-      .find()
-      .then(q => q.map(v => v.toJSON() as AwardInfoModel))
-  }
-
-  /**
-   * 获取奖项详情
-   * @param objectId
-   */
-  public getAwardDetail(objectId: string) {
-    const query = new AV.Query('award')
-    return query.get(objectId).then(q => q.toJSON() as AwardInfoModel)
+  public async create(room, { name, count }) {
+    const award = new Award()
+    const id = Math.random()
+      .toString(36)
+      .substr(2)
+    // 创建奖项
+    const object = await award.save({
+      id,
+      name,
+      count,
+      room,
+      finish: false
+    })
+    // 关联房间
+    room.set('awards', [...(room.awards || []), object])
+    await room.save()
+    return object
   }
 }

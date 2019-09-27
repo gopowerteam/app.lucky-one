@@ -18,7 +18,7 @@ export const browserRouter: RouteConfig = {
     },
     {
       path: 'room/:token',
-      name: 'room',
+      name: 'host-room',
       props: true,
       component: RoomPage
     },
