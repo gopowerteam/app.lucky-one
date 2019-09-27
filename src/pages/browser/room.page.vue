@@ -1,5 +1,7 @@
 <template>
-  <q-page class="room-page">room page</q-page>
+  <q-page class="room-page">
+    <q-btn label="分享房间" @click="onShare"></q-btn>
+  </q-page>
 </template>
 
 <style>
@@ -24,6 +26,10 @@ export default class RoomPage extends Vue {
   private roomService = new RoomService()
 
   public async mounted() {
+    if (!this.token) {
+      throw Error('无法找到房间')
+    }
+
     this.room = await this.roomService.getRoom(this.token)
 
     if (!this.room.getEnable()) {
@@ -35,6 +41,10 @@ export default class RoomPage extends Vue {
     setTimeout(() => {
       conversation.send(new TextMessage('asdasd'))
     }, 3000)
+  }
+
+  private onShare() {
+    open(`/#/visitor/room/${this.token}`)
   }
 }
 </script>

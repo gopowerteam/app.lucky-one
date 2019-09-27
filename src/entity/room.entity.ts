@@ -5,8 +5,10 @@ import { ConversationBase } from 'leancloud-realtime'
 import { RoomService } from '@/services/room.service'
 import { AwardService } from '@/services/award.service'
 import { Observable } from 'rxjs'
+import { UserService } from '@/services/user.service'
 
 export class RoomEntity extends Entity {
+  private userService = new UserService()
   private realtimeUtil = new RealtimeUtil()
   /**
    * 会话实例
@@ -29,6 +31,14 @@ export class RoomEntity extends Entity {
       this.set('enable', true)
       await this.save()
     }
+  }
+
+  public getUserList() {
+    if (!this._conversation) {
+      throw Error('房间未启用')
+    }
+
+    return this.userService.getUserList(this._conversation)
   }
 
   /**

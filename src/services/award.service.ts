@@ -3,7 +3,7 @@ import { Entity } from '@/entity'
 import { AwardEntity } from '@/entity/award.entity'
 import { RoomEntity } from '@/entity/room.entity'
 
-const Award = AV.Object.extend('Award')
+const Award = AV.Object.extend('award')
 
 export class AwardService {
   /**
@@ -33,7 +33,7 @@ export class AwardService {
     if (conversation.members.length < count) {
       throw Error('开奖用户不足')
     }
-    
+
     // 抽取中奖用户
     const result = conversation.members
       .map(x => ({ id: x, seed: Math.random() }))

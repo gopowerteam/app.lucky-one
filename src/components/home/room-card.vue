@@ -40,7 +40,7 @@ export default class RoomCard extends Vue {
   private dialog = false
 
   private onOpenRoom() {
-    this.$router.push({ name: 'room', params: { token: this.data.token } })
+    this.$router.push({ name: 'host-room', params: { token: this.data.token } })
   }
 }
 </script>

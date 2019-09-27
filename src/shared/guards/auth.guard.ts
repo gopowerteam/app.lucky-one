@@ -16,7 +16,7 @@ export const authGuard = async ({ router, store }, { to, from, next }) => {
   }
 
   if (!isHostPath(to.fullPath) && !isExcludePath(to.fullPath) && !store.state.name) {
-    target = '/visitor/login'
+    target = { name: 'login', params: { redirect: to.fullPath } }
   }
 
   next(target)

@@ -8,6 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     name: '',
+    avatar: '',
     rooms: new Array(),
     history: new Array()
   },
@@ -25,15 +26,19 @@ export default new Vuex.Store({
         .toString(36)
         .substr(2)}`
     },
-    setVisitorName(state, name) {
-      state.name = name
+    setUser(state, { username, avatar }) {
+      state.name = username
+      state.avatar = avatar
     }
   },
   actions: {},
   plugins: [
     // 持久化存储插件
     createPersistedState({
-      key: 'vuex'
+      key: 'vuex',
+      filter: ({ type }) => {
+        return !['setUser', 'setHostName'].includes(type)
+      }
     })
   ]
 })
