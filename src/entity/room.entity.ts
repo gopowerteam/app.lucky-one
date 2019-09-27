@@ -27,7 +27,8 @@ export class RoomEntity extends Entity {
 
     if (this.valid) {
       this._conversation = await realtimeUtil.createConversation(this.attributes.code.toString())
-      this.set('conversation', this._conversation.id)
+      const conversation = AV.Object.createWithoutData('_Conversation', this._conversation.id)
+      this.set('conversation', conversation)
       this.set('enable', true)
       await this.save()
     }
@@ -50,7 +51,8 @@ export class RoomEntity extends Entity {
     }
 
     if (this.attributes.enable && this.valid) {
-      this._conversation = (await this.realtimeUtil.getConversation(this.attributes.conversation)) as ConversationBase
+      const conversation = this.attributes.conversation
+      this._conversation = (await this.realtimeUtil.getConversation(conversation.id)) as ConversationBase
       return this._conversation
     } else {
       return Promise.reject('当前会话未启用')
