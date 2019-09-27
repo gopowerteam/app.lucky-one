@@ -1,12 +1,17 @@
 <template>
-  <q-page class="flex flex-center home-page bg-img">
+  <q-page class="flex flex-center home-page">
     <div class="home-container shadow-24 bg-img column">
       <div class="q-mt-xl q-pr-lg text-right">
         <q-btn outline class="confirm-button" @click="dialog.modify = true">创建房间</q-btn>
       </div>
       <q-scroll-area class="rooms" horizontal ref="scrollArea" :thumb-style="{display:'none'}">
         <div class="row no-wrap full-height items-center">
-          <room-card class="q-ma-md q-mr-xl" v-for="item of roomSet" :key="item.token" :data="item"></room-card>
+          <room-card
+            class="q-ma-md q-mr-xl"
+            v-for="(item,index) of roomSet"
+            :key="index"
+            :entity="item"
+          ></room-card>
         </div>
       </q-scroll-area>
       <div class="q-mb-xl q-pr-lg text-right" v-if="roomSet.length">
@@ -34,17 +39,17 @@ import { RoomService } from '~/services/room.service'
 import RoomCard from '~/components/home/room-card.vue'
 import RoomModify from '~/components/home/room-modify.vue'
 import { QScrollArea } from 'quasar'
+import { RoomEntity } from '~/entity/room.entity'
 
 @Component({
   components: {
     RoomCard,
-    RoomModify,
-    QScrollArea
+    RoomModify
   }
 })
 export default class HomePage extends Vue {
   public roomService = new RoomService()
-  private roomSet: any[] = []
+  private roomSet: Array<RoomEntity> = []
   private dialog = {
     modify: false
   }
@@ -60,9 +65,7 @@ export default class HomePage extends Vue {
    */
   private queryRooms() {
     this.scrollArea.setScrollPosition(0, 500)
-    this.roomService.getRoomList().then(rooms => {
-      this.roomSet = rooms.map(x => x.value)
-    })
+    this.roomService.getRoomList().then(rooms => this.roomSet = rooms)
   }
 
   private toLeft() {

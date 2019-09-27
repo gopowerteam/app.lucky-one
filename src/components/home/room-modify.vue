@@ -39,9 +39,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-import { RoomInfo } from '~/models/room/room-info.model'
 import { RoomService } from '~/services/room.service'
 import { QForm, colors } from 'quasar'
+import { RoomInfoModel } from '~/models/room/room-info.model'
 
 @Component({
   name: 'RoomModify',
@@ -59,24 +59,27 @@ export default class RoomModify extends Vue {
     password: [value => !!value || '请输入密码,以防止其他人修改房间属性']
   }
 
-  private model = new RoomInfo()
+  private model = new RoomInfoModel()
 
   @Emit()
   private cancel() {
     const form = this.$refs.form as QForm
-    this.model = new RoomInfo()
     form.reset()
   }
   @Emit()
   private success() {
     this.$q.notify({ color: 'teal', message: '创建房间成功', icon: 'tag_faces', position: 'top' })
+    this.model = new RoomInfoModel()
     this.cancel()
   }
   private async submit() {
     const form = this.$refs.form as QForm
     const result = await form.validate()
     if (!result) return
-    this.roomService.create(this.model).then(this.success)
+    this.roomService
+      .create(this.model)
+      .then(this.success)
+      .catch(() => {})
   }
 }
 </script>

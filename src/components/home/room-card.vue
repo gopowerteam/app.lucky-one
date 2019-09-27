@@ -1,10 +1,10 @@
 <template>
-  <section class="room-card shadow-5" @click="onOpenRoom">
-    <div class="room-header">
+  <section class="room-card q-pa-md shadow-5 bg-white" @click="onOpenRoom">
+    <div class="room-header text-no-warp ellipsis">
       <q-icon name="img:/icons/home.svg" />
       {{data.name}}
     </div>
-    <div class="room-comment">{{data.description}}</div>
+    <div class="room-comment ellipsis">{{data.description}}</div>
     <div class="room-footer row justify-between">
       <div class="current-user text-blue-grey">
         <q-icon name="emoji_people" size="1.5em" color="purple" />
@@ -12,35 +12,32 @@
       </div>
       <a class="text-blue-grey-10 cursor-pointer" @click="dialog = true">⚙进入</a>
     </div>
-    <q-dialog v-model="dialog" persistent>
-      <room-detail style="width:700px;max-width:700px" :roomInfo="data" @cancel="dialog = false"></room-detail>
-    </q-dialog>
   </section>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import RoomDetail from '~/components/home/room-detail.vue'
+import { RoomEntity } from '~/entity/room.entity'
+import { RoomDetailModel } from '~/models/room/room-detail.model'
 
 @Component({
   name: 'RoomCard',
-  components: {
-    RoomDetail
-  }
+  components: {}
 })
 export default class RoomCard extends Vue {
-  @Prop({ default: '房间名称' })
-  private roomName!: string
+  @Prop({ required: true })
+  private entity!: RoomEntity
 
-  @Prop()
-  private data: any
-
-  private cNum = 15
-  private sNum = 20
+  private cNum = 0
   private dialog = false
+  private data = new RoomDetailModel()
 
   private onOpenRoom() {
     this.$router.push({ name: 'host-room', params: { token: this.data.token } })
+  }
+
+  private mounted() {
+    this.data = this.entity.attributes as RoomDetailModel
   }
 }
 </script>

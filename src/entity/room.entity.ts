@@ -16,7 +16,7 @@ export class RoomEntity extends Entity {
   private _conversation?: ConversationBase
 
   public getEnable() {
-    return this.get('enable')
+    return this.get('enable') as boolean
   }
 
   /**
@@ -55,7 +55,7 @@ export class RoomEntity extends Entity {
       this._conversation = (await this.realtimeUtil.getConversation(conversation.id)) as ConversationBase
       return this._conversation
     } else {
-      throw new Error('当前会话未启用')
+      return Promise.reject('当前会话未启用')
     }
   }
 
