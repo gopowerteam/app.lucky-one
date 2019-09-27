@@ -1,5 +1,7 @@
 <template>
-  <q-page class="room-page">room page</q-page>
+  <q-page class="room-page">
+    <q-btn label="分享房间" @click="onShare"></q-btn>
+  </q-page>
 </template>
 
 <style>
@@ -10,6 +12,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import { RoomInfo } from '../../models/room/room-info.model'
 import { RoomEntity } from '../../entity/room.entity'
+import { Message, TextMessage } from 'leancloud-realtime'
 
 @Component({
   components: {}
@@ -23,11 +26,25 @@ export default class RoomPage extends Vue {
   private roomService = new RoomService()
 
   public async mounted() {
+    if (!this.token) {
+      throw Error('无法找到房间')
+    }
+
     this.room = await this.roomService.getRoom(this.token)
 
-    if (this.room.getEnable()) {
+    if (!this.room.getEnable()) {
       await this.room.setEnable()
     }
+
+    const conversation = await this.room.getConversation()
+
+    setTimeout(() => {
+      conversation.send(new TextMessage('asdasd'))
+    }, 3000)
+  }
+
+  private onShare() {
+    open(`/#/visitor/room/${this.token}`)
   }
 }
 </script>

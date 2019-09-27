@@ -35,7 +35,6 @@ export class RealtimeUtil {
    */
   public async createConversation(name) {
     const client = await this.getClient()
-
     return client.createConversation({
       members: [],
       name,
@@ -45,7 +44,13 @@ export class RealtimeUtil {
 
   public async getConversation(id) {
     const client = await this.getClient()
-    return client.getConversation(id).catch(console.error.bind(console))
+    return client
+      .getConversation(id)
+      .then(conversation => {
+        conversation.join()
+        return conversation
+      })
+      .catch(console.error.bind(console))
   }
 
   public addUserListener(conversation: ConversationBase) {

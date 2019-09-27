@@ -58,6 +58,7 @@ export class RoomService {
    * @param token
    */
   public async getRoom(token) {
+    AV.User.loginAnonymously().then(user => {})
     const query = new AV.Query('room')
 
     // 获取房间信息
