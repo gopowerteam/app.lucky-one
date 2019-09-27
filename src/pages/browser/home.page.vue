@@ -39,6 +39,7 @@ import { RoomService } from '~/services/room.service'
 import RoomCard from '~/components/home/room-card.vue'
 import RoomModify from '~/components/home/room-modify.vue'
 import { QScrollArea } from 'quasar'
+import { RoomEntity } from '~/entity/room.entity'
 
 @Component({
   components: {
@@ -48,7 +49,7 @@ import { QScrollArea } from 'quasar'
 })
 export default class HomePage extends Vue {
   public roomService = new RoomService()
-  private roomSet: any[] = []
+  private roomSet: Array<RoomEntity> = []
   private dialog = {
     modify: false
   }
@@ -64,9 +65,7 @@ export default class HomePage extends Vue {
    */
   private queryRooms() {
     this.scrollArea.setScrollPosition(0, 500)
-    this.roomService.getRoomList().then(rooms => {
-      this.roomSet = rooms.map(x => x.value)
-    })
+    this.roomService.getRoomList().then(rooms => this.roomSet = rooms)
   }
 
   private toLeft() {

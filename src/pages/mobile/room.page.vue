@@ -10,8 +10,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
-import { RoomInfo } from '../../models/room/room-info.model'
-import { RoomEntity } from '../../entity/room.entity'
+import { RoomInfoModel } from '~/models/room/room-info.model'
+import { RoomEntity } from '~/entity/room.entity'
 import { Message, TextMessage, ConversationBase } from 'leancloud-realtime'
 
 @Component({

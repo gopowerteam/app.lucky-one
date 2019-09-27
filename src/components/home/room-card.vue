@@ -38,13 +38,6 @@ export default class RoomCard extends Vue {
 
   private mounted() {
     this.data = this.entity.attributes as RoomDetailModel
-    this.entity
-      .getConversation()
-      .then(value => {
-        if (!value) return
-        this.cNum = value.members.length
-      })
-      .catch(() => {})
   }
 }
 </script>

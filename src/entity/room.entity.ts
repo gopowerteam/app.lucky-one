@@ -57,7 +57,6 @@ export class RoomEntity extends Entity {
     } else {
       return Promise.reject('当前会话未启用')
     }
-    return this.conversation
   }
 
   /**

@@ -62,10 +62,10 @@ export default class AwardModify extends Vue {
     const result = await form.validate()
     if (!result) return
     this.model.token = this.token
-    this.awardService
-      .create(this.model)
-      .then(this.success)
-      .catch(r => this.$q.notify({ message: r }))
+    // this.awardService
+    //   .create(this.model)
+    //   .then(this.success)
+    //   .catch(r => this.$q.notify({ message: r }))
   }
 }
 </script>

@@ -67,7 +67,7 @@ export default class RoomPage extends Vue {
   }
 
   private async mounted() {
-    this.awardDetailModel = await this.awardService.getAwardDetail(this.awardId)
+    // this.awardDetailModel = await this.awardService.getAwardDetail(this.awardId)
   }
 
   private luckDrawClick() {
