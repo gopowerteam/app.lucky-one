@@ -33,7 +33,7 @@
     <q-dialog v-model="dialog.awardModify">
       <award-modify
         style="width:600px;max-width:600px"
-        :token="data.token"
+        :roomObjId="data.obejctId"
         @cancel="dialog.awardModify = false"
         @success="refreshData"
       ></award-modify>
@@ -47,8 +47,6 @@ import { RoomService } from '~/services/room.service'
 import AwardStatus from '~/components/award/award-status.vue'
 import { QAvatar, colors } from 'quasar'
 import AwardModify from '~/components/award/award-modify.vue'
-import { AwardInfoModel } from '~/models/award/award-info.model'
-import { RoomDetailModel } from '~/models/room/room-detail.model'
 import { AwardService } from '~/services/award.service'
 import { RoomEntity } from '~/entity/room.entity'
 import { AwardEntity } from '~/entity/award.entity'
@@ -71,10 +69,10 @@ export default class RoomPage extends Vue {
     awardModify: false
   }
 
-  private data = new RoomDetailModel()
+  private data: any = {}
   private roomEntity!: RoomEntity
 
-  private awardList: Array<AwardInfoModel> = []
+  private awardList: Array<any> = []
 
   public async mounted() {
 
@@ -82,10 +80,11 @@ export default class RoomPage extends Vue {
       throw Error('无法找到房间')
     }
     this.roomEntity = await this.roomService.getRoom(this.token)
-
-
     this.refreshData()
-    this.data = this.roomEntity.attributes as RoomDetailModel
+    this.data = {
+      ...this.roomEntity.attributes,
+      obejctId: this.roomEntity.object.id
+    }
     if (this.roomEntity.getEnable()) {
       await this.roomEntity.setEnable()
     }
@@ -101,8 +100,16 @@ export default class RoomPage extends Vue {
   }
 
   public refreshData() {
-    this.roomEntity.getAwards().then(data => this.awardList = data.map(v => v.attributes as AwardInfoModel))
+    this.roomEntity.getAwards().then(data => {
+      this.awardList = data.map(v => {
+        return {
+          ...v.attributes,
+          objectId: v.object.id
+        }
+      })
+    })
   }
+
 
   private back() {
     this.$router.go(-1)

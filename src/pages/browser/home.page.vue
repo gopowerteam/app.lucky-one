@@ -10,7 +10,7 @@
             class="q-ma-md q-mr-xl"
             v-for="(item,index) of roomSet"
             :key="index"
-            :entity="item"
+            :model="item"
           ></room-card>
         </div>
       </q-scroll-area>
@@ -39,7 +39,6 @@ import { RoomService } from '~/services/room.service'
 import RoomCard from '~/components/home/room-card.vue'
 import RoomModify from '~/components/home/room-modify.vue'
 import { QScrollArea } from 'quasar'
-import { RoomEntity } from '~/entity/room.entity'
 
 @Component({
   components: {
@@ -49,7 +48,8 @@ import { RoomEntity } from '~/entity/room.entity'
 })
 export default class HomePage extends Vue {
   public roomService = new RoomService()
-  private roomSet: Array<RoomEntity> = []
+  private roomSet: Array<any> = []
+
   private dialog = {
     modify: false
   }
@@ -65,7 +65,9 @@ export default class HomePage extends Vue {
    */
   private queryRooms() {
     this.scrollArea.setScrollPosition(0, 500)
-    this.roomService.getRoomList().then(rooms => this.roomSet = rooms)
+    this.roomService.getRoomList().then(rooms => {
+      this.roomSet = rooms.map(v => v.attributes)
+    })
   }
 
   private toLeft() {
