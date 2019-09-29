@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center q-ma-md">
         <q-btn @click="back" icon="reply" />
         <div class="text-h5">{{data.name}}</div>
-        <q-btn icon="share"></q-btn>
+        <q-btn icon="share" @click="shareClick"></q-btn>
       </div>
       <div class="row justify-between q-ma-md">
         <div class="current-user text-blue-gary-10 q-ml-md">
@@ -34,6 +34,7 @@
       <award-modify
         style="width:600px;max-width:600px"
         :roomObjId="data.obejctId"
+        :entity="roomEntity"
         @cancel="dialog.awardModify = false"
         @success="refreshData"
       ></award-modify>
@@ -70,7 +71,7 @@ export default class RoomPage extends Vue {
   }
 
   private data: any = {}
-  private roomEntity!: RoomEntity
+  private roomEntity!: any
 
   private awardList: Array<any> = []
 
@@ -80,12 +81,12 @@ export default class RoomPage extends Vue {
       throw Error('无法找到房间')
     }
     this.roomEntity = await this.roomService.getRoom(this.token)
-    this.refreshData()
+
     this.data = {
       ...this.roomEntity.attributes,
       obejctId: this.roomEntity.object.id
     }
-    if (this.roomEntity.getEnable()) {
+    if (!this.roomEntity.getEnable()) {
       await this.roomEntity.setEnable()
     }
 
@@ -93,6 +94,8 @@ export default class RoomPage extends Vue {
       if (!conversation) return
       this.cNum = conversation.members.length
     })
+
+    this.refreshData()
   }
 
   public activated() {
@@ -113,6 +116,10 @@ export default class RoomPage extends Vue {
 
   private back() {
     this.$router.go(-1)
+  }
+
+  private shareClick() {
+    this.$router.push({ name: 'visitor-room', params: { token: this.token } })
   }
 }
 </script>

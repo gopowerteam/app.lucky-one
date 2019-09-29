@@ -87,4 +87,9 @@ export class RoomEntity extends Entity {
 
     return this.realtimeUtil.addUserListener(this._conversation)
   }
+
+  public createAward(param: any) {
+    const service = new AwardService()
+    return service.create(this.object, param)
+  }
 }

@@ -39,6 +39,9 @@ export default class AwardModify extends Vue {
   @Prop()
   private roomObjId!: string
 
+  @Prop()
+  private entity!: RoomEntity
+
   private rules = {
     name: [value => !!value || '请输入奖项名称'],
     count: [value => !!value || '请输入奖项数量']
@@ -62,7 +65,9 @@ export default class AwardModify extends Vue {
     const form = this.$refs.form as QForm
     const result = await form.validate()
     if (!result) return
-    this.awardService.create(this.roomObjId, this.model).then(this.success).catch(() => { })
+
+    this.entity.createAward(this.model).then(this.success).catch(() => { })
+    // this.awardService.create(this.roomObjId, this.model).then(this.success).catch(() => { })
   }
 }
 </script>

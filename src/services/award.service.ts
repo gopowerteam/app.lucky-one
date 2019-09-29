@@ -50,9 +50,7 @@ export class AwardService {
    * @param room
    * @param param1
    */
-  public create(roomObjId: string, param) {
-    const room = AV.Object.createWithoutData('room', roomObjId)
-
+  public create(roomObj, param) {
     const award = new Award()
     param.id = Math.random()
       .toString(36)
@@ -61,7 +59,7 @@ export class AwardService {
     Object.keys(param).forEach(k => {
       award.set(k, param[k])
     })
-    award.set('room', room)
+    award.set('room', roomObj)
 
     return award.save()
   }
