@@ -22,16 +22,16 @@ export class AwardService {
    * @param count
    * @param exclude
    */
-  public async setResult(award, count = 1, exclude) {
+  public async setResult(award: AV.Object, count = 1, exclude) {
     const roomEntity = Entity.from(award.get('room'), RoomEntity)
     const conversation = await roomEntity.getConversation()
 
     if (!conversation) {
-      throw Error('房间未启用')
+      return Promise.reject('房间未启用')
     }
 
     if (conversation.members.length < count) {
-      throw Error('开奖用户不足')
+      return Promise.reject('开奖用户不足')
     }
 
     // 抽取中奖用户
@@ -41,7 +41,6 @@ export class AwardService {
       .slice(0, count)
     award.set('result', result)
     award.set('finish', true)
-
     return award.save()
   }
 

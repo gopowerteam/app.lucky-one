@@ -38,7 +38,7 @@ export class RoomEntity extends Entity {
       throw Error('房间未启用')
     }
 
-    return this.userService.getUserList(this._conversation)
+    return this.userService.getUserList(this._conversation).then(list => list.map(v => v.toJSON()))
   }
 
   /**

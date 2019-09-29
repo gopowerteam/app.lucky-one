@@ -23,7 +23,7 @@ export default class AwardStatus extends Vue {
 
   private startDrawClick() {
     if (this.model.finish) return
-    this.$router.push({ name: 'draw', params: { objectId: this.model.objectId } })
+    this.$router.push({ name: 'draw', params: { awardId: this.model.objectId } })
   }
 }
 </script>
