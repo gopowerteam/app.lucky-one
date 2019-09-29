@@ -25,7 +25,7 @@
           ></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
-          <q-avatar v-for="i in 100" :key="i" class="q-ma-sm" color="deep-purple">{{i}}</q-avatar>
+          <q-avatar v-for="(user,index) in userList" :key="index" class="q-ma-sm" color="deep-purple" :icon="`img:${user.avatar}`">{{user.username}}</q-avatar>
         </q-scroll-area>
       </div>
     </div>
@@ -33,7 +33,6 @@
     <q-dialog v-model="dialog.awardModify">
       <award-modify
         style="width:600px;max-width:600px"
-        :roomObjId="data.obejctId"
         :entity="roomEntity"
         @cancel="dialog.awardModify = false"
         @success="refreshData"
@@ -51,6 +50,7 @@ import AwardModify from '~/components/award/award-modify.vue'
 import { AwardService } from '~/services/award.service'
 import { RoomEntity } from '~/entity/room.entity'
 import { AwardEntity } from '~/entity/award.entity'
+import { ConversationBase } from 'leancloud-realtime'
 
 @Component({
   components: {
@@ -71,12 +71,13 @@ export default class RoomPage extends Vue {
   }
 
   private data: any = {}
-  private roomEntity!: any
+  private userList: any[] = []
+  private roomEntity: RoomEntity | null = null
 
   private awardList: Array<any> = []
+  private conversation!: ConversationBase
 
   public async mounted() {
-
     if (!this.token) {
       throw Error('无法找到房间')
     }
@@ -90,9 +91,13 @@ export default class RoomPage extends Vue {
       await this.roomEntity.setEnable()
     }
 
-    this.roomEntity.getConversation().then(conversation => {
-      if (!conversation) return
-      this.cNum = conversation.members.length
+    this.conversation = await this.roomEntity.getConversation()
+    this.roomEntity.addUserListener().subscribe({
+      next: (users) => {
+        this.cNum = users.length
+        this.getUserList()
+      },
+      error: console.log
     })
 
     this.refreshData()
@@ -103,13 +108,9 @@ export default class RoomPage extends Vue {
   }
 
   public refreshData() {
+    if (!this.roomEntity) return
     this.roomEntity.getAwards().then(data => {
-      this.awardList = data.map(v => {
-        return {
-          ...v.attributes,
-          objectId: v.object.id
-        }
-      })
+      this.awardList = data.map(v => v.attributes)
     })
   }
 
@@ -119,7 +120,18 @@ export default class RoomPage extends Vue {
   }
 
   private shareClick() {
-    this.$router.push({ name: 'visitor-room', params: { token: this.token } })
+    // this.$router.push({ name: 'visitor-room', params: { token: this.token } })
+    open(`/#/visitor/room/${this.token}`)
+  }
+
+  /**
+   * 获取用户列表
+   */
+  public async getUserList() {
+    if (this.roomEntity) {
+      const list = await this.roomEntity.getUserList()
+      this.userList = list.map((x: any) => x.attributes)
+    }
   }
 }
 </script>

@@ -36,8 +36,6 @@ import { RoomEntity } from '~/entity/room.entity'
 export default class AwardModify extends Vue {
   private awardService = new AwardService()
 
-  @Prop()
-  private roomObjId!: string
 
   @Prop()
   private entity!: RoomEntity
@@ -67,7 +65,6 @@ export default class AwardModify extends Vue {
     if (!result) return
 
     this.entity.createAward(this.model).then(this.success).catch(() => { })
-    // this.awardService.create(this.roomObjId, this.model).then(this.success).catch(() => { })
   }
 }
 </script>
