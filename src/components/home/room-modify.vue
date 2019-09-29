@@ -79,7 +79,7 @@ export default class RoomModify extends Vue {
     this.roomService
       .create(this.model)
       .then(this.success)
-      .catch(() => {})
+      .catch(() => { })
   }
 }
 </script>

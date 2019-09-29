@@ -1,5 +1,10 @@
 export class AwardInfoModel {
   /**
+   * 奖项ID
+   */
+  public id = ''
+
+  /**
    * 奖项名称
    */
   public name = ''
@@ -15,12 +20,7 @@ export class AwardInfoModel {
   public description = ''
 
   /**
-   * 房间Token
+   * 抽奖结束标识
    */
-  public token = ''
-
-  /**
-   * 中奖者名单
-   */
-  public userIds: Array<string> = []
+  public finish = false
 }

@@ -26,6 +26,7 @@ import { RoomService } from '~/services/room.service'
 import { QForm, colors } from 'quasar'
 import { AwardInfoModel } from '~/models/award/award-info.model'
 import { AwardService } from '~/services/award.service'
+import { RoomEntity } from '~/entity/room.entity'
 
 @Component({
   name: 'AwardModify',
@@ -45,6 +46,7 @@ export default class AwardModify extends Vue {
   }
 
   private model = new AwardInfoModel()
+  private roomEntity!: RoomEntity
 
   @Emit()
   private cancel() {
@@ -61,11 +63,11 @@ export default class AwardModify extends Vue {
     const form = this.$refs.form as QForm
     const result = await form.validate()
     if (!result) return
-    this.model.token = this.token
-    // this.awardService
-    //   .create(this.model)
-    //   .then(this.success)
-    //   .catch(r => this.$q.notify({ message: r }))
+    this.roomEntity.createAward(this.model).then(this.success).catch(() => { })
+  }
+
+  private mounted() {
+    (new RoomService()).getRoom(this.token).then(data => this.roomEntity = data)
   }
 }
 </script>

@@ -71,19 +71,19 @@ export default class RoomPage extends Vue {
   }
 
   private luckDrawClick() {
-    this.awardDetailModel.userIds = []
-    const subscription = timer(0, 1000).subscribe(index => {
-      this.awardDetailModel.userIds.push(this.getRndInteger().toString())
-      if (this.awardDetailModel.userIds.length === this.awardDetailModel.count) subscription.unsubscribe()
-    })
+    // this.awardDetailModel.userIds = []
+    // const subscription = timer(0, 1000).subscribe(index => {
+    //   this.awardDetailModel.userIds.push(this.getRndInteger().toString())
+    //   if (this.awardDetailModel.userIds.length === this.awardDetailModel.count) subscription.unsubscribe()
+    // })
   }
 
   private getRndInteger() {
-    let numberIndex = 0
-    do {
-      numberIndex = Math.floor(Math.random() * (this.cNum - 1)) + 1
-    } while (this.awardDetailModel.userIds.includes(numberIndex.toString()))
-    return numberIndex
+    // let numberIndex = 0
+    // do {
+    //   numberIndex = Math.floor(Math.random() * (this.cNum - 1)) + 1
+    // } while (this.awardDetailModel.userIds.includes(numberIndex.toString()))
+    // return numberIndex
   }
 }
 </script>
