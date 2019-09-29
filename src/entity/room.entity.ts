@@ -3,7 +3,7 @@ import { Entity } from './'
 import { RealtimeUtil } from '@/shared/utils/realtime.util'
 import { ConversationBase } from 'leancloud-realtime'
 import { AwardService } from '@/services/award.service'
-import { Observable } from 'rxjs'
+import { throwError, Observable } from 'rxjs'
 import { UserService } from '@/services/user.service'
 
 export class RoomEntity extends Entity {
@@ -71,7 +71,7 @@ export class RoomEntity extends Entity {
    */
   public addMessageListener(): Observable<any> {
     if (!this._conversation) {
-      return Observable.throw(new Error('会话不存在'))
+      return throwError(new Error('会话不存在'))
     }
 
     return this.realtimeUtil.addUMessageListener(this._conversation)
@@ -82,7 +82,7 @@ export class RoomEntity extends Entity {
    */
   public addUserListener(): Observable<any> {
     if (!this._conversation) {
-      return Observable.throw(new Error('会话不存在'))
+      return throwError(new Error('会话不存在'))
     }
 
     return this.realtimeUtil.addUserListener(this._conversation)
