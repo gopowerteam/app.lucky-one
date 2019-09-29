@@ -41,7 +41,7 @@
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import { QForm, colors } from 'quasar'
-import { RoomInfoModel } from '~/models/room/room-info.model'
+import { RoomInfoModel } from '~/models/room-info.model'
 
 @Component({
   name: 'RoomModify',

@@ -10,7 +10,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
-import { RoomInfoModel } from '~/models/room/room-info.model'
+import { RoomInfoModel } from '~/models/room-info.model'
 import { RoomEntity } from '~/entity/room.entity'
 import { Message, TextMessage, ConversationBase } from 'leancloud-realtime'
 

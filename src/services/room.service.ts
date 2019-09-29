@@ -3,15 +3,11 @@ import md5 from 'crypto-js/md5'
 import store from '~/store'
 import { Entity } from '~/entity'
 import { RoomEntity } from '~/entity/room.entity'
-import { RoomInfoModel } from '~/models/room/room-info.model'
+import { RoomInfoModel } from '~/models/room-info.model'
 const Room = AV.Object.extend('room')
 
 export class RoomService {
-  private query: Query<AV.Object>
-
-  public constructor() {
-    this.query = new AV.Query('room')
-  }
+  private query = new AV.Query('room')
 
   /**
    * 创建房间

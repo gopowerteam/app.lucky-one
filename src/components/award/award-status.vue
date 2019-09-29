@@ -14,19 +14,16 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { AwardInfoModel } from '~/models/award/award-info.model'
 @Component({
   name: 'AwardStatus'
 })
 export default class AwardStatus extends Vue {
   @Prop()
-  private model!: AwardInfoModel
-
-
+  private model!: any
 
   private startDrawClick() {
     if (this.model.finish) return
-    this.$router.push({ name: 'draw', params: { id: this.model.id } })
+    this.$router.push({ name: 'draw', params: { objectId: this.model.objectId } })
   }
 }
 </script>

@@ -22,11 +22,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-import { RoomService } from '~/services/room.service'
-import { QForm, colors } from 'quasar'
-import { AwardInfoModel } from '~/models/award/award-info.model'
+import { QForm } from 'quasar'
+import { AwardInfoModel } from '~/models/award-info.model'
 import { AwardService } from '~/services/award.service'
-import { RoomEntity } from '~/entity/room.entity'
 
 @Component({
   name: 'AwardModify',
@@ -38,7 +36,7 @@ export default class AwardModify extends Vue {
   private awardService = new AwardService()
 
   @Prop()
-  private token!: string
+  private roomObjId!: string
 
   private rules = {
     name: [value => !!value || '请输入奖项名称'],
@@ -46,7 +44,6 @@ export default class AwardModify extends Vue {
   }
 
   private model = new AwardInfoModel()
-  private roomEntity!: RoomEntity
 
   @Emit()
   private cancel() {
@@ -63,11 +60,7 @@ export default class AwardModify extends Vue {
     const form = this.$refs.form as QForm
     const result = await form.validate()
     if (!result) return
-    this.roomEntity.createAward(this.model).then(this.success).catch(() => { })
-  }
-
-  private mounted() {
-    (new RoomService()).getRoom(this.token).then(data => this.roomEntity = data)
+    this.awardService.create(this.roomObjId, this.model).then(this.success).catch(() => { })
   }
 }
 </script>

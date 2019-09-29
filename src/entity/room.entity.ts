@@ -6,8 +6,6 @@ import { RoomService } from '@/services/room.service'
 import { AwardService } from '@/services/award.service'
 import { Observable } from 'rxjs'
 import { UserService } from '@/services/user.service'
-import { AwardInfoModel } from '@/models/award/award-info.model'
-import { AwardDetailModel } from '@/models/award/award-detail.model'
 
 export class RoomEntity extends Entity {
   private userService = new UserService()
@@ -59,17 +57,6 @@ export class RoomEntity extends Entity {
     } else {
       return Promise.reject('当前会话未启用')
     }
-  }
-
-  /**
-   * 创建奖
-   *
-   *
-   * @param params
-   */
-  public createAward(params: AwardInfoModel) {
-    const awardService = new AwardService()
-    return awardService.create(this.object, params)
   }
 
   /**
