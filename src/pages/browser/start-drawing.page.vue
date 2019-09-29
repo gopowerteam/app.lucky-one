@@ -14,7 +14,11 @@
         <q-avatar v-for="i in cNum" :key="i" class="q-ma-sm" color="deep-purple">{{i}}</q-avatar>
       </q-scroll-area>
 
-      <q-scroll-area v-if="luckUsers.lenth" class="q-mt-md q-mx-xl user-icons overflow-scroll q-card" style="height:150px">
+      <q-scroll-area
+        v-if="luckUsers.lenth"
+        class="q-mt-md q-mx-xl user-icons overflow-scroll q-card"
+        style="height:150px"
+      >
         <q-avatar
           v-for="item in luckUsers"
           :key="item.id"
@@ -56,6 +60,7 @@ export default class RoomPage extends Vue {
   }
 
   private mounted() {
+    console.log(this.objectId)
     this.awardService.getAward(this.objectId).then(entity => {
       this.awardData = entity.attributes
       this.roomData = entity.get('room').attributes
@@ -63,11 +68,15 @@ export default class RoomPage extends Vue {
   }
 
   private luckDrawClick() {
-    this.awardEntity.setResult(this.roomData.limit).then(data => console.log(data))
-      .catch(msg => this.$q.notify({
-        position: 'top',
-        message: msg
-      }))
+    this.awardEntity
+      .setResult(this.roomData.limit)
+      .then(data => console.log(data))
+      .catch(msg =>
+        this.$q.notify({
+          position: 'top',
+          message: msg
+        })
+      )
   }
 }
 </script>

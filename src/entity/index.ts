@@ -30,11 +30,18 @@ export class Entity {
   }
 
   public get attributes() {
-    return this.object.attributes
+    return {
+      ...this.object.attributes,
+      id: this.id
+    }
   }
 
   public get value() {
     return this.object.attributes
+  }
+
+  public get id() {
+    return this.object.id
   }
 
   public get get() {

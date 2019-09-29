@@ -17,15 +17,16 @@
       <div class="content q-mx-lg row">
         <q-scroll-area class="award-list overflow-scroll q-card" style="height:460px">
           <div v-if="!awardList.length">暂无奖项</div>
-          <award-status
-            v-else
-            v-for="(award,index) of awardList"
-            :key="index"
-            :model="award"
-          ></award-status>
+          <award-status v-else v-for="(award,index) of awardList" :key="index" :model="award"></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
-          <q-avatar v-for="(user,index) in userList" :key="index" class="q-ma-sm" color="deep-purple" :icon="`img:${user.avatar}`">{{user.username}}</q-avatar>
+          <q-avatar
+            v-for="(user,index) in userList"
+            :key="index"
+            class="q-ma-sm"
+            color="deep-purple"
+            :icon="`img:${user.avatar}`"
+          >{{user.username}}</q-avatar>
         </q-scroll-area>
       </div>
     </div>
@@ -85,15 +86,16 @@ export default class RoomPage extends Vue {
 
     this.data = {
       ...this.roomEntity.attributes,
-      obejctId: this.roomEntity.object.id
+      id: this.roomEntity.id
     }
+
     if (!this.roomEntity.getEnable()) {
       await this.roomEntity.setEnable()
     }
 
     this.conversation = await this.roomEntity.getConversation()
     this.roomEntity.addUserListener().subscribe({
-      next: (users) => {
+      next: users => {
         this.cNum = users.length
         this.getUserList()
       },
@@ -110,10 +112,13 @@ export default class RoomPage extends Vue {
   public refreshData() {
     if (!this.roomEntity) return
     this.roomEntity.getAwards().then(data => {
-      this.awardList = data.map(v => v.attributes)
+      console.log(data)
+      this.awardList = data.map(x => ({
+        id: x.id,
+        ...x.attributes
+      }))
     })
   }
-
 
   private back() {
     this.$router.go(-1)

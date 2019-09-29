@@ -8,7 +8,8 @@
 
 <style lang="less" scoped>
 .browser-layout {
-  //
+  background: url('~@/assets/images/browser-bg.png') no-repeat;
+  background-size: cover;
 }
 </style>
 
@@ -16,5 +17,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component
-export default class BrowserLayout extends Vue { }
+export default class BrowserLayout extends Vue {}
 </script>

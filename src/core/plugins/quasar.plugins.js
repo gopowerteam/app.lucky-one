@@ -23,8 +23,12 @@ import {
   QInput,
   QToggle,
   QCard,
+  QCardSection,
+  QCardActions,
   Notify,
-  QScrollArea
+  QScrollArea,
+  QSeparator,
+  QAvatar
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -47,7 +51,11 @@ Vue.use(Quasar, {
     QInput,
     QToggle,
     QCard,
-    QScrollArea
+    QCardActions,
+    QCardSection,
+    QSeparator,
+    QScrollArea,
+    QAvatar
   },
   directives: {},
   plugins: {

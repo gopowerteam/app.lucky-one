@@ -19,7 +19,6 @@ import { RoomService } from '~/services/room.service'
 import { RoomEntity } from '~/entity/room.entity'
 import { ConversationBase } from 'leancloud-realtime'
 
-
 @Component({
   components: {}
 })
@@ -32,6 +31,7 @@ export default class RoomPage extends Vue {
 
   private userList: any = []
   public async mounted() {
+    console.log(123)
     // 获取房间信息
     this.room = await this.roomService.getRoom(this.token)
 
@@ -42,7 +42,7 @@ export default class RoomPage extends Vue {
       this.getUserList()
     })
     // 添加之间更新通知
-    this.room.addMessageListener().subscribe(message => { })
+    this.room.addMessageListener().subscribe(message => {})
     // 更新用户列表
     this.getUserList()
   }

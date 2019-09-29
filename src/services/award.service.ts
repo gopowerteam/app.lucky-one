@@ -52,9 +52,6 @@ export class AwardService {
    */
   public create(roomObj, param) {
     const award = new Award()
-    param.id = Math.random()
-      .toString(36)
-      .substr(2)
     // 创建奖项
     Object.keys(param).forEach(k => {
       award.set(k, param[k])
