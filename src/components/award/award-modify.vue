@@ -25,6 +25,7 @@ import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import { QForm } from 'quasar'
 import { AwardInfoModel } from '~/models/award-info.model'
 import { AwardService } from '~/services/award.service'
+import { RoomEntity } from '~/entity/room.entity'
 
 @Component({
   name: 'AwardModify',
@@ -44,6 +45,7 @@ export default class AwardModify extends Vue {
   }
 
   private model = new AwardInfoModel()
+  private roomEntity!: RoomEntity
 
   @Emit()
   private cancel() {

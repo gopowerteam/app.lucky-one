@@ -6,6 +6,7 @@ import { RoomEntity } from '@/entity/room.entity'
 const Award = AV.Object.extend('award')
 
 export class AwardService {
+  private query = new AV.Query('award')
   /**
    * 获取奖项
    * @param id
