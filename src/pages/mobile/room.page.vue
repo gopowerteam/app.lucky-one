@@ -1,6 +1,12 @@
 <template>
   <q-page class="room-page">
-    <q-btn label="分享房间" @click="onShare"></q-btn>
+    mobile room
+    <div class="flex row">
+      <div class="q-ma-md text-center" v-for="user of userList" :key="user.username">
+        <img class="avatar q-ma-xs" :src="user.avatar" />
+        <div>{{user.username}}</div>
+      </div>
+    </div>
   </q-page>
 </template>
 
@@ -10,9 +16,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
-import { RoomInfoModel } from '~/models/room-info.model'
 import { RoomEntity } from '~/entity/room.entity'
-import { Message, TextMessage, ConversationBase } from 'leancloud-realtime'
+import { ConversationBase } from 'leancloud-realtime'
+
 
 @Component({
   components: {}
@@ -20,42 +26,43 @@ import { Message, TextMessage, ConversationBase } from 'leancloud-realtime'
 export default class RoomPage extends Vue {
   @Prop()
   private token
-
   private room?: RoomEntity
-
+  private conversation?: ConversationBase
   private roomService = new RoomService()
 
-  private conversation
-
+  private userList: any = []
   public async mounted() {
-    if (!this.token) {
-      throw Error('无法找到房间')
-    }
-
+    // 获取房间信息
     this.room = await this.roomService.getRoom(this.token)
 
-    if (!this.room.getEnable()) {
-      await this.room.setEnable()
-    }
-
+    // 获取会话信息
     this.conversation = await this.room.getConversation()
-
-    setTimeout(() => {
-      this.conversation.send(new TextMessage('asdasd'))
-    }, 3000)
+    // 添加用户列表更新通知
+    this.room.addUserListener().subscribe(members => {
+      this.getUserList()
+    })
+    // 添加之间更新通知
+    this.room.addMessageListener().subscribe(message => { })
+    // 更新用户列表
+    this.getUserList()
   }
 
-  private onShare() {
-    open(`/#/visitor/room/${this.token}`)
-  }
-
-  private beforeDestroy() {
-    if (this.room && this.room.value.enable) {
-      this.conversation.quit()
+  /**
+   * 获取用户列表
+   */
+  public async getUserList() {
+    if (this.room) {
+      const list = await this.room.getUserList()
+      this.userList = list.map((x: any) => x.attributes)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.avatar {
+  width: 75px;
+  height: 75px;
+  border-radius: 100%;
+}
 </style>
