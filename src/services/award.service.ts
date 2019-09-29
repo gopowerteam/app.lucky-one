@@ -6,13 +6,13 @@ import { RoomEntity } from '@/entity/room.entity'
 const Award = AV.Object.extend('award')
 
 export class AwardService {
+  private query = new AV.Query('award')
   /**
    * 获取奖项
    * @param id
    */
   public async getAward(id) {
-    const query = new AV.Query('award')
-    const award = await query.equalTo('id', id).first()
+    const award = await this.query.equalTo('id', id).first()
     return Entity.from(award, AwardEntity)
   }
 
@@ -50,22 +50,31 @@ export class AwardService {
    * @param room
    * @param param1
    */
-  public async create(room, { name, count }) {
+  public async create(room, param) {
     const award = new Award()
-    const id = Math.random()
+    param.id = Math.random()
       .toString(36)
       .substr(2)
     // 创建奖项
-    const object = await award.save({
-      id,
-      name,
-      count,
-      room,
-      finish: false
+    Object.keys(param).forEach(k => {
+      award.set(k, param[k])
     })
+    award.set('room', room)
+    const object = await award.save()
     // 关联房间
     room.set('awards', [...(room.awards || []), object])
     await room.save()
     return object
+  }
+
+  /**
+   * 查询奖项
+   * @param room
+   */
+  public async queryAwards(room) {
+    return this.query
+      .equalTo('room', room)
+      .find()
+      .then(data => data.map(v => Entity.from(v, AwardEntity)))
   }
 }

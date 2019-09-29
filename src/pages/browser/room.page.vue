@@ -21,8 +21,7 @@
             v-else
             v-for="(award,index) of awardList"
             :key="index"
-            :data="award"
-            :limit="data.limit"
+            :model="award"
           ></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
@@ -51,6 +50,8 @@ import AwardModify from '~/components/award/award-modify.vue'
 import { AwardInfoModel } from '~/models/award/award-info.model'
 import { RoomDetailModel } from '~/models/room/room-detail.model'
 import { AwardService } from '~/services/award.service'
+import { RoomEntity } from '~/entity/room.entity'
+import { AwardEntity } from '~/entity/award.entity'
 
 @Component({
   components: {
@@ -71,6 +72,7 @@ export default class RoomPage extends Vue {
   }
 
   private data = new RoomDetailModel()
+  private roomEntity!: RoomEntity
 
   private awardList: Array<AwardInfoModel> = []
 
@@ -79,17 +81,16 @@ export default class RoomPage extends Vue {
     if (!this.token) {
       throw Error('无法找到房间')
     }
+    this.roomEntity = await this.roomService.getRoom(this.token)
+
 
     this.refreshData()
-    const roomEntity = await this.roomService.getRoom(this.token)
-    this.data = roomEntity.attributes as RoomDetailModel
-    if (roomEntity.getEnable()) {
-      await roomEntity.setEnable()
+    this.data = this.roomEntity.attributes as RoomDetailModel
+    if (this.roomEntity.getEnable()) {
+      await this.roomEntity.setEnable()
     }
 
-
-
-    roomEntity.getConversation().then(conversation => {
+    this.roomEntity.getConversation().then(conversation => {
       if (!conversation) return
       this.cNum = conversation.members.length
     })
@@ -100,13 +101,12 @@ export default class RoomPage extends Vue {
   }
 
   public refreshData() {
-    // this.awardService.queryAwards(this.token).then(data => (this.awardList = data))
+    this.roomEntity.getAwards().then(data => this.awardList = data.map(v => v.attributes as AwardInfoModel))
   }
 
   private back() {
     this.$router.go(-1)
   }
-  private awardSetting() { }
 }
 </script>
 

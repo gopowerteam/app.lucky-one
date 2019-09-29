@@ -6,6 +6,8 @@ import { RoomService } from '@/services/room.service'
 import { AwardService } from '@/services/award.service'
 import { Observable } from 'rxjs'
 import { UserService } from '@/services/user.service'
+import { AwardInfoModel } from '@/models/award/award-info.model'
+import { AwardDetailModel } from '@/models/award/award-detail.model'
 
 export class RoomEntity extends Entity {
   private userService = new UserService()
@@ -65,9 +67,17 @@ export class RoomEntity extends Entity {
    *
    * @param params
    */
-  public createAward(params) {
+  public createAward(params: AwardInfoModel) {
     const awardService = new AwardService()
     return awardService.create(this.object, params)
+  }
+
+  /**
+   * 获取房间下的所有奖项
+   */
+  public getAwards() {
+    const awardService = new AwardService()
+    return awardService.queryAwards(this.object)
   }
 
   /**
