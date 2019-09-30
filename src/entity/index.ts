@@ -7,17 +7,27 @@ export class Entity {
     this._object = entity
   }
 
-  public static from(object: AV.Object): Entity
-  public static from<T extends Entity>(object, entity: new (obj: AV.Object) => T): T
+  public static from(object: AV.Object | AV.Queriable): Entity
+  public static from<T extends Entity>(object: AV.Object[] | AV.Queriable[], entity: new (obj: AV.Object) => T): T[]
+  public static from<T extends Entity>(object: any, entity: new (obj: AV.Object) => T): T
   public static from(object, entity?) {
     if (!object) {
       throw Error('数据实体不能为空')
     }
 
+    // 生成实体
+    const generatorEntity = creator => {
+      if (object instanceof Array) {
+        return object.map(x => creator())
+      } else {
+        return creator()
+      }
+    }
+
     if (entity) {
-      return new entity(object)
+      return generatorEntity(() => new entity(object))
     } else {
-      return new Entity(object)
+      return generatorEntity(() => new Entity(object))
     }
   }
 
@@ -30,11 +40,18 @@ export class Entity {
   }
 
   public get attributes() {
-    return this.object.attributes
+    return {
+      ...this.object.attributes,
+      id: this.id
+    }
   }
 
   public get value() {
     return this.object.attributes
+  }
+
+  public get id() {
+    return this.object.id
   }
 
   public get get() {

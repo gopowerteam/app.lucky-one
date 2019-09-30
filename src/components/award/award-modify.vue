@@ -46,7 +46,6 @@ export default class AwardModify extends Vue {
   }
 
   private model = new AwardInfoModel()
-  private roomEntity!: RoomEntity
 
   @Emit()
   private cancel() {
