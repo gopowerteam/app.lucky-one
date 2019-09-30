@@ -7,10 +7,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    name: '',
-    avatar: '',
     rooms: new Array(),
-    history: new Array()
+    history: new Array(),
+    name: '',
+    visitor: {
+      username: '',
+      avatar: ''
+    }
   },
   mutations: {
     // 添加房间
@@ -21,14 +24,16 @@ export default new Vuex.Store({
       state.history = [...state.history, room]
     },
     // 设置host名称
-    setHostName(state) {
+    setHost(state) {
       state.name = `host:${Math.random()
         .toString(36)
         .substr(2)}`
     },
-    setUser(state, { username, avatar }) {
-      state.name = username
-      state.avatar = avatar
+    setVisitor(state, { username, avatar }) {
+      state.visitor = {
+        username,
+        avatar
+      }
     }
   },
   actions: {},
@@ -36,9 +41,7 @@ export default new Vuex.Store({
     // 持久化存储插件
     createPersistedState({
       key: 'vuex',
-      filter: ({ type }) => {
-        return !['setUser', 'setHostName'].includes(type)
-      }
+      paths: ['rooms', 'history', 'name']
     })
   ]
 })

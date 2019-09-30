@@ -58,11 +58,16 @@ export class RoomService {
    */
   public async getRoom(token) {
     // 获取房间信息
-    const room = await this.query.equalTo('token', token).first()
-    if (!room) {
-      return Promise.reject('token 异常')
+    const room = await this.query
+      .equalTo('token', token)
+      .include('awards')
+      .first()
+
+    if (room) {
+      return Entity.from(room, RoomEntity)
+    } else {
+      throw Promise.reject('token 异常')
     }
-    return Entity.from(room, RoomEntity)
   }
 
   /**

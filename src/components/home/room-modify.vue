@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center q-ma-md">
       <q-btn @click="cancel" icon="reply" />
       <div class="text-h5">创建房间</div>
-      <q-btn outline class="confirm-button" type="submit" @click="submit">确定</q-btn>
+      <q-btn outline class="confirm-button-dialog" type="submit" @click="submit">确定</q-btn>
     </div>
     <q-form class="q-ma-md" ref="form">
       <q-input filled label="房间名称" v-model="model.name" :rules="rules.name"></q-input>
@@ -24,11 +24,7 @@
         :rules="rules.password"
       >
         <template v-slot:append>
-          <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            @click="isPwd = !isPwd"
-          />
+          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
         </template>
       </q-input>
       <q-toggle label="允许重复抽奖" v-model="model.repeat" />
@@ -79,7 +75,7 @@ export default class RoomModify extends Vue {
     this.roomService
       .create(this.model)
       .then(this.success)
-      .catch(() => { })
+      .catch(() => {})
   }
 }
 </script>

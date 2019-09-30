@@ -1,5 +1,5 @@
 <template>
-  <q-layout class="browser-layout" view="lHh Lpr lFf">
+  <q-layout class="mobile-layout" view="lHh Lpr lFf">
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -7,6 +7,10 @@
 </template>
 
 <style lang="less" scoped>
+.mobile-layout {
+  background: url('~@/assets/images/mobile-bg.png') no-repeat;
+  background-size: cover;
+}
 </style>
 
 <script lang="ts">

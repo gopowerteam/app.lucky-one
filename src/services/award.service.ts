@@ -6,7 +6,6 @@ import { RoomEntity } from '@/entity/room.entity'
 const Award = AV.Object.extend('award')
 
 export class AwardService {
-  private query = new AV.Query('award')
   /**
    * 获取奖项
    * @param id
@@ -22,8 +21,9 @@ export class AwardService {
    * @param count
    * @param exclude
    */
-  public async setResult(award: AV.Object, count = 1, exclude) {
-    const roomEntity = Entity.from(award.get('room'), RoomEntity)
+  public async setResult(award, count = 1, exclude) {
+    const room = award.get('room') as AV.Object
+    const roomEntity = Entity.from(room, RoomEntity)
     const conversation = await roomEntity.getConversation()
 
     if (!conversation) {
@@ -50,32 +50,23 @@ export class AwardService {
    * @param room
    * @param param1
    */
-  public create(roomObj, param) {
+  public create(room, param) {
     const award = new Award()
-    param.id = Math.random()
-      .toString(36)
-      .substr(2)
-    // 创建奖项
-    Object.keys(param).forEach(k => {
-      award.set(k, param[k])
-    })
-    award.set('room', roomObj)
 
-    return award.save()
+    // 保存奖项更新房间奖项
+    award.set('room', room)
+    return award.save(param)
   }
 
   /**
    * 查询奖项
-   * @param room
+   * @param data roomObject
    */
-  public async queryAwards(data: string | AV.Object) {
+  public async queryAwards(data: AV.Object): Promise<Array<AwardEntity>> {
     const query = new AV.Query('award')
-    if (typeof data === 'string') {
-      const roomObj = AV.Object.createWithoutData('room', data)
-      query.equalTo('room', roomObj)
-    } else {
-      query.equalTo('room', data)
-    }
-    return query.find().then(results => results.map(v => Entity.from(v, AwardEntity)))
+    return query
+      .equalTo('room', data)
+      .find()
+      .then(results => results.map(v => Entity.from(v, AwardEntity)))
   }
 }

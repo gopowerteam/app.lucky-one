@@ -19,7 +19,7 @@ export class RealtimeUtil {
    */
   private createClient() {
     return globalThis.$realtime
-      .createIMClient(store.state.name)
+      .createIMClient(store.state.visitor.username || store.state.name)
       .then(client => {
         RealtimeUtil._client = client
         RealtimeUtil._client.on(Event.MEMBERS_JOINED, this.onMembersEvent)

@@ -1,14 +1,19 @@
 <template>
   <q-page class="flex flex-center start-drawing">
-    <div class="draw-container shadow-5 bg-img">
+    <div class="draw-container shadow-5">
       <div class="flex justify-between items-center q-ma-md">
         <q-btn @click="back" icon="reply" />
         <div class="text-h5 q-pl-xl">{{ awardData.name }}</div>
         <q-btn class="q-ml-xl confirm-button" @click="luckDrawClick" :disable="awardData.finish">开始摇奖</q-btn>
       </div>
-      <div class="q-pl-xl">
-        <q-icon name="emoji_people" size="1.5em" color="purple" />
-        {{ userList.length }}/{{ roomData.limit || '无限制' }}
+      <div class="q-px-xl row justify-between">
+        <div>
+          <q-icon name="emoji_people" size="1.5em" color="purple" />
+          {{ userList.length }}/{{ roomData.limit || '无限制' }}
+        </div>
+        <div>
+          将抽取 <span class="text-white">{{ awardData.count }}</span> 名幸运者
+        </div>
       </div>
       <q-scroll-area class="q-mt-md q-mx-xl user-icons overflow-scroll q-card" style="height:300px">
         <q-avatar v-for="user in userList" :key="user.objectId" class="q-ma-sm">
@@ -38,8 +43,10 @@ import { Entity } from '../../entity'
 import { ConversationBase, TextMessage } from 'leancloud-realtime'
 import { interval } from 'rxjs'
 import { take } from 'rxjs/operators'
+import { UserService } from '../../services/user.service'
 
 @Component({
+  name: 'start-drawing',
   components: {}
 })
 export default class RoomPage extends Vue {
@@ -66,6 +73,10 @@ export default class RoomPage extends Vue {
   private async mounted() {
     const entity = await this.awardService.getAward(this.awardId)
     this.awardData = entity.attributes
+    if (this.awardData.finish) {
+      this.queryUsers()
+      return
+    }
     this.roomData = entity.get('room').attributes
     this.awardEntity = entity
     this.roomEntity = Entity.from(entity.get('room'), RoomEntity)
@@ -103,6 +114,12 @@ export default class RoomPage extends Vue {
         const lucker = this.userList.find(x => x.username === ids[index])
         if (lucker) this.luckUsers.push(lucker)
       })
+  }
+
+  private queryUsers() {
+    const service = new UserService()
+    const userName = this.awardData.result.map(v => v.id)
+    service.getUserListByName(userName).then(data => (this.luckUsers = data))
   }
 }
 </script>

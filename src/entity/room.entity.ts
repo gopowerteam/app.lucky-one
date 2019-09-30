@@ -5,6 +5,7 @@ import { ConversationBase } from 'leancloud-realtime'
 import { AwardService } from '@/services/award.service'
 import { throwError, Observable } from 'rxjs'
 import { UserService } from '@/services/user.service'
+import { AwardEntity } from './award.entity'
 
 export class RoomEntity extends Entity {
   private userService = new UserService()
@@ -61,7 +62,7 @@ export class RoomEntity extends Entity {
   /**
    * 获取房间下的所有奖项
    */
-  public getAwards() {
+  public async getAwards() {
     const awardService = new AwardService()
     return awardService.queryAwards(this.object)
   }

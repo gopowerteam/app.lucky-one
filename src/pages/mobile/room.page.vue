@@ -1,59 +1,115 @@
 <template>
-  <q-page class="room-page">
-    <div class="q-pa-md">
-      <q-btn class="absolute-top-right q-ma-md" icon="share" @click="shareClick"></q-btn>
-      <div class="text-h4 q-pt-md">
-        Lucky
-        <span class="q-ml-xl block">Draw</span>
+  <q-page class="room-page flex column">
+    <div class="room-header q-pa-md column justify-between">
+      <div class="row justify-between">
+        <div class="room-logo">
+          <div class="q-ml-xs">Lucky</div>
+          <div class="q-ml-lg">Draw</div>
+        </div>
       </div>
-      <div class="text-h4 q-pt-xl">{{ roomData.name }}</div>
-      <div class="text-blue-gary-10 q-mt-md">
-        <q-icon name="emoji_people" size="1.5em" color="purple" />
-        {{ userList.length }}/{{ roomData.limit || '无限制' }}
+      <div class="row justify-between room-info">
+        <div>
+          <div class="room-name">{{ roomAttr.name }}</div>
+          <div>
+            <q-icon size="20px" class="q-ma-xs" name="account_circle" />
+            <span class="q-ma-xs">{{ userList.length }}</span>
+            <span class="q-ma-xs">/</span>
+            <span class="q-ma-xs">{{ roomAttr.limit }}</span>
+          </div>
+        </div>
       </div>
     </div>
-    <q-tabs v-model="currentTab" dense class="bg-grey-3" align="justify" narrow-indicator>
-      <q-tab name="user-list" label="房间用户"></q-tab>
-      <q-tab name="award-list" label="奖项列表"></q-tab>
-      <q-tab name="my-award" label="我的奖项"></q-tab>
-    </q-tabs>
-    <q-separator />
-    <q-tab-panels v-model="currentTab" animated class="bg-grey-3">
-      <q-tab-panel name="user-list">
-        <q-avatar v-for="user of userList" :key="user.objectId" class="q-ma-sm">
-          <img :src="user.avatar" />
-        </q-avatar>
-      </q-tab-panel>
-      <q-tab-panel name="award-list">
-        <q-card v-for="award of awardList" :key="award.objectId" class="bg-purple-5 q-my-md">
-          <div class="q-px-md">
-            <span class="text-h5">{{ award.name }}</span>
-            <q-avatar size="xs" color="orange" class="q-ml-xs">{{ award.count }}</q-avatar>
-            <span class="absolute-right q-mr-md q-mt-md">{{ award.finish ? '已开将' : '待开奖' }}</span>
-          </div>
-          <q-avatar v-for="user of getAwardResult(award.result)" :key="user.objectId" class="q-ma-sm">
-            <img :src="user.avatar" />
-          </q-avatar>
-        </q-card>
-      </q-tab-panel>
-      <q-tab-panel name="my-award">
-        <q-card v-for="award of awardList" :key="award.objectId" class="bg-purple q-my-md">
-          <div class="q-px-md">
-            <span>{{ award.name }}</span>
-            <q-avatar>{{ award.count }}</q-avatar>
-            <span
-              class="absolute-right q-mr-md q-mt-md"
-              :class="[luckerIsMe(award) ? 'text-deep-orange-13' : 'text-grey-13']"
-              >{{ award.finish ? (luckerIsMe(award) ? '已中奖' : '未中奖') : '待开奖' }}</span
-            >
-          </div>
-        </q-card>
-      </q-tab-panel>
-    </q-tab-panels>
+    <q-splitter :value="6" class="panel-container" horizontal>
+      <template v-slot:before>
+        <q-tabs v-model="tab" narrow-indicator dense align="justify">
+          <q-tab name="room" label="房间用户" />
+          <q-tab name="award" label="奖项列表" />
+          <q-tab name="mine" label="我的奖项" />
+        </q-tabs>
+      </template>
+
+      <template v-slot:after>
+        <q-tab-panels
+          class="panel-list"
+          v-model="tab"
+          animated
+          keep-alive
+          transition-prev="fade"
+          transition-next="fade"
+        >
+          <q-tab-panel name="room">
+            <div class="flex row">
+              <q-avatar class="q-ma-md" size="48px" v-for="user of userList" :key="user.username">
+                <img :src="user.avatar" />
+              </q-avatar>
+            </div>
+          </q-tab-panel>
+
+          <q-tab-panel name="award">
+            <q-card class="award-card" v-for="award of awardList" :key="award.id">
+              <q-card-section class="flex row justify-between award-title">
+                <div>
+                  <span class="q-mr-sm">{{ award.name }}</span>
+                  <q-badge text-color="black" color="yellow-6" :label="award.count"></q-badge>
+                </div>
+                <div>{{ award.finish ? '已开奖' : '待开奖' }}</div>
+              </q-card-section>
+              <q-card-section v-if="award.finish">
+                <q-avatar class="q-ma-md" size="42px" v-for="user of userList" :key="user.username">
+                  <img :src="user.avatar" />
+                </q-avatar>
+              </q-card-section>
+            </q-card>
+          </q-tab-panel>
+
+          <q-tab-panel name="mine"></q-tab-panel>
+        </q-tab-panels>
+      </template>
+    </q-splitter>
   </q-page>
 </template>
 
-<style>
+<style lang="less">
+.q-tab--inactive {
+  color: #7e7e7e;
+}
+</style>
+
+<style lang="less" scoped>
+.room-header {
+  flex-basis: 180px;
+  font-size: 16px;
+  font-weight: 400;
+  .room-logo {
+    font-size: 18px;
+    color: #5a5a5a;
+  }
+  .room-info {
+    font-size: 18px;
+  }
+  .room-name {
+    font-size: 24px;
+  }
+}
+
+.panel-container {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: #f5f5f5;
+  flex: 1;
+}
+.panel-list {
+  background-color: transparent;
+}
+
+.award-card {
+  .award-title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  background: linear-gradient(135deg, #9820e0, #dc43f2);
+}
 </style>
 
 <script lang="ts">
@@ -61,23 +117,15 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import { RoomEntity } from '~/entity/room.entity'
 import { ConversationBase } from 'leancloud-realtime'
-import { QTabPanels, QTabPanel, QTabs, QTab, QSeparator } from 'quasar'
-import UserList from '~/components/home/user-list.vue'
 
 @Component({
-  components: {
-    QTabPanels,
-    QTabPanel,
-    QTabs,
-    QTab,
-    QSeparator,
-    UserList
-  }
+  components: {}
 })
 export default class RoomPage extends Vue {
   @Prop()
   private token
-  private room?: RoomEntity
+  private room: RoomEntity | null = null
+  private tab = 'room'
   private conversation?: ConversationBase
   private roomService = new RoomService()
   private roomData: any = {}
@@ -90,27 +138,32 @@ export default class RoomPage extends Vue {
     this.room = await this.roomService
       .getRoom(this.token)
       .then(d => d)
-      .catch(r => {
+      .catch(msg => {
         this.$q.notify({
-          message: r,
+          message: msg,
           position: 'top'
         })
-        return undefined
+        return null
       })
-    if (!this.room) return
-    this.roomData = this.room.attributes
-    this.awardList = await this.room.getAwards().then(awardEntitys => awardEntitys.map(v => v.object.toJSON()))
 
+    if (!this.room) return
     // 获取会话信息
     this.conversation = await this.room.getConversation()
     // 添加用户列表更新通知
-    this.room.addUserListener().subscribe(members => {
-      this.getUserList()
-    })
+    this.room.addUserListener().subscribe(members => this.getUserList())
     // 添加之间更新通知
-    this.room.addMessageListener().subscribe(this.onLuckMessage)
+    this.room.addMessageListener().subscribe(message => {})
     // 更新用户列表
     this.getUserList()
+    this.getAwardList()
+  }
+
+  public get roomAttr() {
+    if (this.room) {
+      return this.room.attributes
+    }
+
+    return {}
   }
 
   private async onLuckMessage(message) {
@@ -128,20 +181,14 @@ export default class RoomPage extends Vue {
     }
   }
 
-  private shareClick() {
-    // this.$router.push({ name: 'visitor-room', params: { token: this.token } })
-    open(`/#/visitor/room/${this.token}`)
-  }
-
-  private getAwardResult(result: any[]) {
-    if (!result) return []
-    const ids = result.map(v => v.id)
-    return this.userList.filter(u => ids.includes(u.username))
-  }
-
-  private luckerIsMe(award: any) {
-    if (!award.result) return
-    return award.result.includes(sessionStorage.getItem('username'))
+  /**
+   * 获取用户列表
+   */
+  public async getAwardList() {
+    if (this.room) {
+      const list = await this.room.getAwards()
+      this.awardList = list.map((x: any) => x.attributes)
+    }
   }
 }
 </script>
