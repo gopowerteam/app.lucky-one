@@ -17,8 +17,9 @@ export default class RoomQrcode extends Vue {
   private token
 
   @Watch('token', { immediate: true })
-  private onTokenChange() {
-    const url = window.location.href.replace('host', 'visitor')
+  private onTokenChange(val) {
+    if (!val) return
+    const url = `${window.location.origin}/#/visitor/room/${this.token}`
     this.$nextTick(() => {
       const el = document.querySelector('#my-room')
       QRCode.toCanvas(el, url)
