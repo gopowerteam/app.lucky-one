@@ -1,10 +1,5 @@
 export class AwardInfoModel {
   /**
-   * 奖项ID
-   */
-  public id = ''
-
-  /**
    * 奖项名称
    */
   public name = ''

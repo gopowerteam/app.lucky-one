@@ -39,7 +39,7 @@ export class RoomEntity extends Entity {
       throw Error('房间未启用')
     }
 
-    return this.userService.getUserList(this._conversation)
+    return this.userService.getUserList(this._conversation).then(list => list.map(v => v.toJSON()))
   }
 
   /**
@@ -63,7 +63,8 @@ export class RoomEntity extends Entity {
    * 获取房间下的所有奖项
    */
   public async getAwards() {
-    return this.attributes.awards
+    const awardService = new AwardService()
+    return awardService.queryAwards(this.object)
   }
 
   /**

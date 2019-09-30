@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center q-ma-md">
       <q-btn @click="cancel" icon="reply" />
       <div class="text-h5">创建奖项</div>
-      <q-btn outline class="confirm-button" type="submit" @click="submit">确定</q-btn>
+      <q-btn outline class="confirm-button-dialog" type="submit" @click="submit">确定</q-btn>
     </div>
     <q-form class="q-ma-md" ref="form">
       <q-input filled label="奖项名称" v-model="model.name" :rules="rules.name"></q-input>
@@ -36,7 +36,6 @@ import { RoomEntity } from '~/entity/room.entity'
 export default class AwardModify extends Vue {
   private awardService = new AwardService()
 
-
   @Prop()
   private entity!: RoomEntity
 
@@ -63,7 +62,10 @@ export default class AwardModify extends Vue {
     const result = await form.validate()
     if (!result) return
 
-    this.entity.createAward(this.model).then(this.success).catch(() => { })
+    this.entity
+      .createAward(this.model)
+      .then(this.success)
+      .catch(() => {})
   }
 }
 </script>

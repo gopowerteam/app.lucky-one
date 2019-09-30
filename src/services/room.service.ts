@@ -62,11 +62,11 @@ export class RoomService {
       .equalTo('token', token)
       .include('awards')
       .first()
-      
+
     if (room) {
       return Entity.from(room, RoomEntity)
     } else {
-      throw new Error('token 异常')
+      throw Promise.reject('token 异常')
     }
   }
 
