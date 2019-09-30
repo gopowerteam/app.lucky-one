@@ -104,8 +104,11 @@ export default class RoomPage extends Vue {
   private setLuckUser(userList: any[]) {
     const ids = userList.map(v => v.id)
     const msgData = {
-      awardId: this.awardId,
-      ids
+      type: 'AWARD_RESULT',
+      data: {
+        awardId: this.awardId,
+        userNames: ids
+      }
     }
     this.conversation.send(new TextMessage(JSON.stringify(msgData)))
     interval(1000)

@@ -55,14 +55,29 @@
                 <div>{{ award.finish ? '已开奖' : '待开奖' }}</div>
               </q-card-section>
               <q-card-section v-if="award.finish">
-                <q-avatar class="q-ma-md" size="42px" v-for="user of userList" :key="user.username">
+                <q-avatar class="q-ma-md" size="42px" v-for="user of getAwardResult(award.result)" :key="user.username">
                   <img :src="user.avatar" />
                 </q-avatar>
               </q-card-section>
             </q-card>
           </q-tab-panel>
 
-          <q-tab-panel name="mine"></q-tab-panel>
+          <q-tab-panel name="mine">
+            <q-card v-for="award of awardList" :key="award.objectId" class="award-card">
+              <q-card-section class="flex row justify-between award-title">
+                <div>
+                  <span class="q-mr-sm">{{ award.name }}</span>
+                  <q-badge text-color="black" color="yellow-6" :label="award.count"></q-badge>
+                </div>
+                <div
+                  class="absolute-right q-mr-md q-mt-md"
+                  :class="[luckerIsMe(award) ? 'text-deep-orange-13' : 'text-grey-13']"
+                >
+                  {{ award.finish ? (luckerIsMe(award) ? '已中奖' : '未中奖') : '待开奖' }}
+                </div>
+              </q-card-section>
+            </q-card>
+          </q-tab-panel>
         </q-tab-panels>
       </template>
     </q-splitter>
@@ -152,7 +167,7 @@ export default class RoomPage extends Vue {
     // 添加用户列表更新通知
     this.room.addUserListener().subscribe(members => this.getUserList())
     // 添加之间更新通知
-    this.room.addMessageListener().subscribe(message => {})
+    this.room.addMessageListener().subscribe(this.onLuckMessage)
     // 更新用户列表
     this.getUserList()
     this.getAwardList()
@@ -166,9 +181,13 @@ export default class RoomPage extends Vue {
     return {}
   }
 
-  private async onLuckMessage(message) {
+  private onLuckMessage(message) {
     if (!this.room) return
-    this.awardList = await this.room.getAwards().then(awardEntitys => awardEntitys.map(v => v.object.toJSON()))
+    const { type } = JSON.parse(message)
+    if (type !== 'AWARD_RESULT') return
+    this.room.getAwards().then(awardEntitys => {
+      this.awardList = awardEntitys.map(v => v.object.toJSON())
+    })
   }
 
   /**
@@ -189,6 +208,18 @@ export default class RoomPage extends Vue {
       const list = await this.room.getAwards()
       this.awardList = list.map((x: any) => x.attributes)
     }
+  }
+
+  private getAwardResult(result: any[]) {
+    if (!result) return []
+    const userNames = result.map(v => v.id)
+    return this.userList.filter(u => userNames.includes(u.username))
+  }
+
+  private luckerIsMe(award: any) {
+    if (!award.result) return
+    const userName = sessionStorage.getItem('username')
+    return award.result.map(v => v.id).includes(userName)
   }
 }
 </script>
