@@ -2,7 +2,7 @@ const aliasExtned = require('./extends/alias.extend')
 
 module.exports = {
   lintOnSave: process.env.NODE_ENV !== 'production',
-  publicPath: '.',
+  publicPath: './',
   pages: {
     index: {
       entry: 'src/app.ts'
