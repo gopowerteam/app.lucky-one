@@ -36,6 +36,7 @@ export class AwardService {
 
     // 抽取中奖用户
     const result = conversation.members
+      .filter(x => !x.includes('host'))
       .map(x => ({ id: x, seed: Math.random() }))
       .sort((x, y) => x.seed - y.seed)
       .slice(0, count)

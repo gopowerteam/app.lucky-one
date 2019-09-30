@@ -21,7 +21,7 @@
         class="q-mt-md q-mx-xl user-icons overflow-scroll q-card"
         style="height:150px"
       >
-        <q-avatar v-for="user in luckUsers" :key="user.id" class="q-ma-sm">
+        <q-avatar v-for="user in luckUsers" :key="user.objectId" class="q-ma-sm">
           <img :src="user.avatar" />
         </q-avatar>
       </q-scroll-area>
@@ -31,19 +31,16 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { QAvatar } from 'quasar'
 import { AwardService } from '~/services/award.service'
 import { AwardEntity } from '~/entity/award.entity'
 import { RoomEntity } from '../../entity/room.entity'
 import { Entity } from '../../entity'
-import { ConversationBase } from 'leancloud-realtime'
+import { ConversationBase, TextMessage } from 'leancloud-realtime'
 import { interval } from 'rxjs'
 import { take } from 'rxjs/operators'
 
 @Component({
-  components: {
-    QAvatar
-  }
+  components: {}
 })
 export default class RoomPage extends Vue {
   @Prop()
@@ -66,17 +63,15 @@ export default class RoomPage extends Vue {
     this.$router.go(-1)
   }
 
-  private mounted() {
-    this.awardService.getAward(this.awardId).then(entity => {
-      this.awardData = entity.attributes
-      this.roomData = entity.get('room').attributes
-      this.awardEntity = entity
-      this.roomEntity = Entity.from(entity.get('room'), RoomEntity)
-      this.roomEntity.getConversation().then(data => {
-        this.conversation = data
-        this.getUserList()
-      })
-    })
+  private async mounted() {
+    const entity = await this.awardService.getAward(this.awardId)
+    this.awardData = entity.attributes
+    this.roomData = entity.get('room').attributes
+    this.awardEntity = entity
+    this.roomEntity = Entity.from(entity.get('room'), RoomEntity)
+    this.conversation = await this.roomEntity.getConversation()
+    this.getUserList()
+    this.roomEntity.addUserListener().subscribe(this.getUserList)
   }
 
   private luckDrawClick() {
@@ -96,11 +91,17 @@ export default class RoomPage extends Vue {
   }
 
   private setLuckUser(userList: any[]) {
+    const ids = userList.map(v => v.id)
+    const msgData = {
+      awardId: this.awardId,
+      ids
+    }
+    this.conversation.send(new TextMessage(JSON.stringify(msgData)))
     interval(1000)
-      .pipe(take(userList.length))
+      .pipe(take(ids.length))
       .subscribe(index => {
-        const id = userList[index].id
-        this.luckUsers.push(this.userList.find(x => x.username === id))
+        const lucker = this.userList.find(x => x.username === ids[index])
+        if (lucker) this.luckUsers.push(lucker)
       })
   }
 }

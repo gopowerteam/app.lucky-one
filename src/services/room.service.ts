@@ -60,7 +60,7 @@ export class RoomService {
     // 获取房间信息
     const room = await this.query.equalTo('token', token).first()
     if (!room) {
-      throw new Error('token 异常')
+      return Promise.reject('token 异常')
     }
     return Entity.from(room, RoomEntity)
   }

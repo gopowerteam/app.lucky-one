@@ -42,7 +42,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import AwardStatus from '~/components/award/award-status.vue'
-import { QAvatar, colors } from 'quasar'
 import AwardModify from '~/components/award/award-modify.vue'
 import { AwardService } from '~/services/award.service'
 import { RoomEntity } from '~/entity/room.entity'
@@ -52,7 +51,6 @@ import { ConversationBase } from 'leancloud-realtime'
 @Component({
   components: {
     AwardStatus,
-    QAvatar,
     AwardModify
   }
 })
@@ -86,7 +84,7 @@ export default class RoomPage extends Vue {
 
     this.conversation = await this.roomEntity.getConversation()
     this.roomEntity.addUserListener().subscribe({
-      next: (users) => {
+      next: users => {
         this.cNum = users.length
         this.getUserList()
       },
@@ -106,7 +104,6 @@ export default class RoomPage extends Vue {
       this.awardList = data.map(v => v.object.toJSON())
     })
   }
-
 
   private back() {
     this.$router.go(-1)

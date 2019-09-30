@@ -23,14 +23,16 @@ export default class LoginPage extends Vue {
     this.redirect = this.$route.params.redirect
   }
   private onLogin() {
+    const userName = `test:${Math.random()
+      .toString(36)
+      .substr(2)}`
     this.userService
       .login({
-        username: `test:${Math.random()
-          .toString(36)
-          .substr(2)}`
+        username: userName
       })
       .then(() => {
         this.$router.push(this.redirect)
+        sessionStorage.setItem('username', userName)
       })
       .catch(() => {
         this.$q.notify('用户名已存在')
