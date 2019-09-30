@@ -28,7 +28,13 @@ import {
   Notify,
   QScrollArea,
   QSeparator,
-  QAvatar
+  QAvatar,
+  QTabs,
+  QTab,
+  QSplitter,
+  QTabPanel,
+  QTabPanels,
+  QBadge
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -55,7 +61,13 @@ Vue.use(Quasar, {
     QCardSection,
     QSeparator,
     QScrollArea,
-    QAvatar
+    QAvatar,
+    QTabs,
+    QTab,
+    QSplitter,
+    QTabPanel,
+    QTabPanels,
+    QBadge
   },
   directives: {},
   plugins: {

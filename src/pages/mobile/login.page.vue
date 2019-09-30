@@ -16,7 +16,7 @@
       </q-card-section>
       <q-separator />
       <q-card-actions vertical>
-        <q-btn flat @click="onLogin">确定</q-btn>
+        <q-btn ripple flat @click="onLogin">登录</q-btn>
       </q-card-actions>
     </q-card>
   </q-page>
@@ -49,7 +49,6 @@ export default class LoginPage extends Vue {
     faker.locale = 'zh_CN'
     this.user.avatar = faker.image.avatar()
     this.user.username = faker.name.firstName() + faker.name.lastName()
-    console.log(this.user)
   }
 
   private onLogin() {

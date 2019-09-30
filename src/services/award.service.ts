@@ -23,7 +23,8 @@ export class AwardService {
    * @param exclude
    */
   public async setResult(award, count = 1, exclude) {
-    const roomEntity = Entity.from(award.get('room'), RoomEntity)
+    const room = award.get('room') as AV.Object
+    const roomEntity = Entity.from(room, RoomEntity)
     const conversation = await roomEntity.getConversation()
 
     if (!conversation) {
@@ -50,29 +51,14 @@ export class AwardService {
    * @param room
    * @param param1
    */
-  public create(roomObj, param) {
+  public create(room, param) {
     const award = new Award()
-    // 创建奖项
-    Object.keys(param).forEach(k => {
-      award.set(k, param[k])
+
+    // 保存奖项更新房间奖项
+    return award.save(param, { fetchWhenSave: true }).then(async object => {
+      room.add('awards', object)
+      await room.save()
+      return object
     })
-    award.set('room', roomObj)
-
-    return award.save()
-  }
-
-  /**
-   * 查询奖项
-   * @param room
-   */
-  public async queryAwards(data: string | AV.Object) {
-    const query = new AV.Query('award')
-    if (typeof data === 'string') {
-      const roomObj = AV.Object.createWithoutData('room', data)
-      query.equalTo('room', roomObj)
-    } else {
-      query.equalTo('room', data)
-    }
-    return query.find().then(results => results.map(v => Entity.from(v, AwardEntity)))
   }
 }

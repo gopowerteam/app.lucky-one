@@ -112,7 +112,6 @@ export default class RoomPage extends Vue {
   public refreshData() {
     if (!this.roomEntity) return
     this.roomEntity.getAwards().then(data => {
-      console.log(data)
       this.awardList = data.map(x => ({
         id: x.id,
         ...x.attributes
