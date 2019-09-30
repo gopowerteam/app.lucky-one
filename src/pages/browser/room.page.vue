@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center q-ma-md">
         <q-btn @click="back" icon="reply" />
         <div class="text-h5">{{ roomData.name }}</div>
-        <q-btn icon="share" @click="shareClick"></q-btn>
+        <q-btn icon="share" @click="dialog.qrCode = true"></q-btn>
       </div>
       <div class="row justify-between q-ma-md">
         <div class="current-user text-blue-gary-10 q-ml-md">
@@ -35,6 +35,9 @@
         @success="refreshData"
       ></award-modify>
     </q-dialog>
+    <q-dialog v-model="dialog.qrCode">
+      <room-qrcode :token="token"></room-qrcode>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -47,11 +50,13 @@ import { AwardService } from '~/services/award.service'
 import { RoomEntity } from '~/entity/room.entity'
 import { AwardEntity } from '~/entity/award.entity'
 import { ConversationBase } from 'leancloud-realtime'
+import RoomQrcode from '~/components/home/room-qrcode.vue'
 
 @Component({
   components: {
     AwardStatus,
-    AwardModify
+    AwardModify,
+    RoomQrcode
   }
 })
 export default class RoomPage extends Vue {
@@ -62,7 +67,8 @@ export default class RoomPage extends Vue {
   private awardService = new AwardService()
   private cNum = 0
   private dialog = {
-    awardModify: false
+    awardModify: false,
+    qrCode: false
   }
 
   private roomData: any = {}
@@ -107,11 +113,6 @@ export default class RoomPage extends Vue {
 
   private back() {
     this.$router.go(-1)
-  }
-
-  private shareClick() {
-    // this.$router.push({ name: 'visitor-room', params: { token: this.token } })
-    open(`/#/visitor/room/${this.token}`)
   }
 
   /**
