@@ -9,10 +9,6 @@ script:
 branches:
   only:
   - release
-env:
-  global:
-    - VUE_APP_LEANCLOUD_APPKEY=$LEANCLOUD_APPKEY
-    - VUE_APP_LEANCLOUD_APPID=$LEANCLOUD_APPID
 deploy:
   provider: pages
   skip_cleanup: true
