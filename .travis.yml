@@ -6,12 +6,12 @@ install:
   - npm install
 script:
   - npm run build
+branches:
+  only:
+  - master
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   keep_history: true
   local_dir: dist
-  target_branch: gh-pages
-  on:
-    branch: release
