@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.a2be46ee818732e31ea8ee886e9b7e4a.js"
+  "precache-manifest.d118d293efebe2740f2a8148d9a3b2b3.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "lucky-draw"});
