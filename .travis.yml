@@ -8,7 +8,7 @@ script:
   - npm run build
 branches:
   only:
-  - master
+  - release
 deploy:
   provider: pages
   skip_cleanup: true
