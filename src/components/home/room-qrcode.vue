@@ -1,7 +1,7 @@
 <template>
   <q-card class="room-qrcode q-pa-xl">
     <canvas id="my-room"></canvas>
-    <div>打开扫一扫直接登录</div>
+    <div class="text-center">打开扫一扫直接登录</div>
   </q-card>
 </template>
 
@@ -17,10 +17,8 @@ export default class RoomQrcode extends Vue {
   private token
 
   @Watch('token', { immediate: true })
-  private onTokenChange(val) {
-    if (!val) return
-    let url = `/#/visitor/room/${this.token}`
-    url = window.location.host + url
+  private onTokenChange() {
+    const url = window.location.href.replace('host', 'visitor')
     this.$nextTick(() => {
       const el = document.querySelector('#my-room')
       QRCode.toCanvas(el, url)
