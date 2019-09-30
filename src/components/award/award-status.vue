@@ -1,14 +1,14 @@
 <template>
   <div
-    class="shadow-1 q-ma-sm text-white"
-    :class="[model.finish ? 'gary-bg':'cbg-to-right cursor-pointer']"
+    class="shadow-1 q-ma-sm text-white cursor-pointer"
+    :class="[model.finish ? 'gary-bg' : 'cbg-to-right ']"
     @click="startDrawClick"
   >
     <div class="row justify-between q-px-sm">
-      <div class="text-h6">{{model.name}}</div>
-      <div>{{model.count}}</div>
+      <div class="text-h6">{{ model.name }}</div>
+      <div>{{ model.count }}</div>
     </div>
-    <div class="text-right q-pr-sm status">{{model.finish ? '已开奖' :'待开奖'}}</div>
+    <div class="text-right q-pr-sm status">{{ model.finish ? '已开奖' : '待开奖' }}</div>
   </div>
 </template>
 
@@ -22,8 +22,7 @@ export default class AwardStatus extends Vue {
   private model!: any
 
   private startDrawClick() {
-    if (this.model.finish) return
-    this.$router.push({ name: 'draw', params: { objectId: this.model.id } })
+    this.$router.push({ name: 'draw', params: { awardId: this.model.objectId } })
   }
 }
 </script>

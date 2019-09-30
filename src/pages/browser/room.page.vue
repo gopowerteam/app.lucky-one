@@ -3,13 +3,13 @@
     <div class="room-container shadow-5 bg-img">
       <div class="flex justify-between items-center q-ma-md">
         <q-btn @click="back" icon="reply" />
-        <div class="text-h5">{{data.name}}</div>
+        <div class="text-h5">{{ roomData.name }}</div>
         <q-btn icon="share" @click="shareClick"></q-btn>
       </div>
       <div class="row justify-between q-ma-md">
         <div class="current-user text-blue-gary-10 q-ml-md">
           <q-icon name="emoji_people" size="1.5em" color="purple" />
-          {{cNum}}/{{data.limit || "无限制"}}
+          {{ cNum }}/{{ roomData.limit || '无限制' }}
         </div>
         <a class="cursor-pointer" @click="dialog.awardModify = true">创建奖项</a>
       </div>
@@ -17,16 +17,12 @@
       <div class="content q-mx-lg row">
         <q-scroll-area class="award-list overflow-scroll q-card" style="height:460px">
           <div v-if="!awardList.length">暂无奖项</div>
-          <award-status v-else v-for="(award,index) of awardList" :key="index" :model="award"></award-status>
+          <award-status v-else v-for="(award, index) of awardList" :key="index" :model="award"></award-status>
         </q-scroll-area>
         <q-scroll-area class="q-ml-md user-icons overflow-scroll q-card" style="height:460px">
-          <q-avatar
-            v-for="(user,index) in userList"
-            :key="index"
-            class="q-ma-sm"
-            color="deep-purple"
-            :icon="`img:${user.avatar}`"
-          >{{user.username}}</q-avatar>
+          <q-avatar v-for="user in userList" :key="user.objectId" class="q-ma-sm">
+            <img :src="user.avatar" />
+          </q-avatar>
         </q-scroll-area>
       </div>
     </div>
@@ -46,7 +42,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RoomService } from '~/services/room.service'
 import AwardStatus from '~/components/award/award-status.vue'
-import { QAvatar, colors } from 'quasar'
 import AwardModify from '~/components/award/award-modify.vue'
 import { AwardService } from '~/services/award.service'
 import { RoomEntity } from '~/entity/room.entity'
@@ -56,7 +51,6 @@ import { ConversationBase } from 'leancloud-realtime'
 @Component({
   components: {
     AwardStatus,
-    QAvatar,
     AwardModify
   }
 })
@@ -71,7 +65,7 @@ export default class RoomPage extends Vue {
     awardModify: false
   }
 
-  private data: any = {}
+  private roomData: any = {}
   private userList: any[] = []
   private roomEntity: RoomEntity | null = null
 
@@ -83,12 +77,7 @@ export default class RoomPage extends Vue {
       throw Error('无法找到房间')
     }
     this.roomEntity = await this.roomService.getRoom(this.token)
-
-    this.data = {
-      ...this.roomEntity.attributes,
-      id: this.roomEntity.id
-    }
-
+    this.roomData = this.roomEntity.object.toJSON()
     if (!this.roomEntity.getEnable()) {
       await this.roomEntity.setEnable()
     }
@@ -112,10 +101,7 @@ export default class RoomPage extends Vue {
   public refreshData() {
     if (!this.roomEntity) return
     this.roomEntity.getAwards().then(data => {
-      this.awardList = data.map(x => ({
-        id: x.id,
-        ...x.attributes
-      }))
+      this.awardList = data.map(v => v.object.toJSON())
     })
   }
 
@@ -134,7 +120,7 @@ export default class RoomPage extends Vue {
   public async getUserList() {
     if (this.roomEntity) {
       const list = await this.roomEntity.getUserList()
-      this.userList = list.map((x: any) => x.attributes)
+      this.userList = list
     }
   }
 }

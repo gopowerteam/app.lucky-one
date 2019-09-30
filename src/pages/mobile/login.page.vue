@@ -52,10 +52,14 @@ export default class LoginPage extends Vue {
   }
 
   private onLogin() {
+    const userName = `test:${Math.random()
+      .toString(36)
+      .substr(2)}`
     this.userService
       .login(this.user)
       .then(() => {
         this.$router.push(this.redirect)
+        sessionStorage.setItem('username', userName)
       })
       .catch(() => {
         this.$q.notify('用户名已存在')

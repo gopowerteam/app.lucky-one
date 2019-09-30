@@ -30,4 +30,16 @@ export class UserService {
     const query = new AV.Query('user')
     return query.containedIn('username', conversation.members).find()
   }
+
+  /**
+   * 获取用户信息
+   * @param names
+   */
+  public getUserListByName(names: string[]) {
+    const query = new AV.Query('user')
+    return query
+      .containedIn('username', names)
+      .find()
+      .then(data => data.map(v => v.toJSON()))
+  }
 }
