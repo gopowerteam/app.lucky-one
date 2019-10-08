@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 import createPersistedState from 'vuex-persistedstate'
 
+const isDev = process.env.NODE_ENV !== 'production'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -41,7 +43,7 @@ export default new Vuex.Store({
     // 持久化存储插件
     createPersistedState({
       key: 'vuex',
-      paths: ['rooms', 'history', 'name']
+      paths: isDev ? ['rooms', 'history', 'name'] : undefined
     })
   ]
 })
