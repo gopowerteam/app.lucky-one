@@ -17,5 +17,8 @@ module.exports = {
   chainWebpack: function(config) {
     // 别名扩展
     aliasExtned(config)
+  },
+  devServer: {
+    host: '0.0.0.0'
   }
 }

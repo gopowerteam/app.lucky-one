@@ -86,15 +86,19 @@ export default class RoomPage extends Vue {
   }
 
   private luckDrawClick() {
+    this.awardData.finish = true
     this.awardEntity
       .setResult(this.awardData.count)
-      .then(data => this.setLuckUser(data.get('result')))
-      .catch(msg =>
+      .then(data => {
+        this.setLuckUser(data.get('result'))
+      })
+      .catch(msg => {
+        this.awardData.finish = false
         this.$q.notify({
           position: 'top',
           message: msg
         })
-      )
+      })
   }
 
   private getUserList() {
